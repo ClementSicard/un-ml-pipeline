@@ -42,3 +42,8 @@ repos:
     hooks:
       - id: interrogate
         args: [--fail-under=100, --verbose]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.3.0
+    hooks:
+      - id: mypy
+        args: [--strict, --ignore-missing-imports]
