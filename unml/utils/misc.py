@@ -7,7 +7,7 @@ from loguru import logger
 from .consts import DEFAULT_LOGGER_LEVEL, LOGGER_LEVELS
 
 
-def log(message: str, verbose: bool, level: str = DEFAULT_LOGGER_LEVEL):
+def log(message: str, verbose: bool, level: str = DEFAULT_LOGGER_LEVEL) -> None:
     """
     Log function to print messages to the console.
 
@@ -59,4 +59,4 @@ def isCorrectURL(url: str) -> bool:
     """
     import validators
 
-    return validators.url(url)
+    return bool(validators.url(url))
