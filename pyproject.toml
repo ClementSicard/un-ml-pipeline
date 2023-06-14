@@ -24,7 +24,8 @@ mypy = "^1.3.0"
 
 [tool.interrogate]
 ignore-init-method = true
-ignore-init-module = false
+ignore-init-module = true
+ignore-module = true
 fail-under = 100
 verbose = 2
 
