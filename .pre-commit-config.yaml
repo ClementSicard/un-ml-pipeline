@@ -35,13 +35,14 @@ repos:
       - id: poetry-check
       - id: poetry-lock
         files: ^pyproject.toml$
+        args: [--verbose]
       - id: poetry-export
         args: [--without-hashes, -o, requirements.txt]
   - repo: https://github.com/econchick/interrogate
     rev: 1.5.0
     hooks:
       - id: interrogate
-        args: [--fail-under=100, --verbose]
+        args: [-c, pyproject.toml]
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.3.0
     hooks:
