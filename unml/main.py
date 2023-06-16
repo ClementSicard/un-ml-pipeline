@@ -3,7 +3,7 @@ from typing import Any, Dict
 from unml.modules.summarize import Summarizer
 from unml.utils.args import parseArgs
 from unml.utils.misc import log
-from unml.utils.text import getDocumentText
+from unml.utils.text import TextUtils
 
 
 def runPipielines(args: Dict[str, Any]) -> None:
@@ -15,12 +15,16 @@ def runPipielines(args: Dict[str, Any]) -> None:
     `args` : `Dict[str, Any]`
         The parsed CLI arguments as a dictionary
     """
-    text = getDocumentText(url=args["url"])
+    text = TextUtils.get_document_text(url=args["url"])
 
-    log(f"Text: {text}", verbose=args["verbose"])
+    log(
+        f"Text: {text[:1000] + '...' if len(text) > 1000 else text}",
+        verbose=args["verbose"],
+    )
 
+    log(f"Document size: {len(text)} characters", verbose=args["verbose"])
     summarizer = Summarizer()
-    summary = summarizer.summarize(text=text)
+    summary = summarizer.summarize(text=text, verbose=args["verbose"])
 
     log(f"Summary: {summary}", verbose=args["verbose"])
 
