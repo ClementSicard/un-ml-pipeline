@@ -89,8 +89,6 @@ class Summarizer:
                 # 3. Summarize each chunk
                 summaries = []
                 for chunk in chunks:
-                    if len(chunk) <= 3:
-                        log(f"Chunk: {chunk}", verbose=verbose, level="debug")
                     summary = self.summarizer.summarize(
                         text=chunk,
                         min_length=min_length,
