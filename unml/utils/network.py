@@ -126,7 +126,7 @@ class NetworkUtils:
 
         Returns
         -------
-        `str | Dict[str, str] | None`
+        `str | Dict[str, str | None] | None`
             The text content of the URL. `None` if there was an issue
         """
         try:
