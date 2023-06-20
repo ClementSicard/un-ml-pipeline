@@ -7,7 +7,9 @@ class DistillBART(Model):
     Class for DistillBART (Sanh et al., 2019) model
     """
 
-    def __init__(self, model_name: str = "sshleifer/distilbart-cnn-12-6") -> None:
+    MODEL_NAME = "sshleifer/distilbart-cnn-12-6"
+
+    def __init__(self, model_name: str = MODEL_NAME) -> None:
         super().__init__(model_name=model_name, task="summarization")
 
     def summarize(
