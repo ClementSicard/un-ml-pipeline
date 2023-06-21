@@ -1,36 +1,49 @@
-from typing import Any, Dict
+from typing import List
 
 from unml.modules.summarize import Summarizer
-from unml.utils.args import parseArgs
+from unml.utils.args import ArgUtils
 from unml.utils.misc import log
-from unml.utils.text import TextUtils
+from unml.utils.network import NetworkUtils
 
 
-def runPipielines(args: Dict[str, Any]) -> None:
+def runPipielines(urls: List[str], verbose: bool = False) -> None:
     """
-    Main function to run subpipelines: get text from URL, summarize text, etc.
+    Main function to run subpipelines: get text from a batch of URLs, then summarize
+    text, extract Named Entities...
 
     Parameters
     ----------
-    `args` : `Dict[str, Any]`
-        The parsed CLI arguments as a dictionary
+    `urls` : `List[str]`
+        List of document URLs
+    `verbose` : `bool`, optional
+        Controls the verbose of the output, by default False
     """
-    text = TextUtils.get_document_text(url=args["url"])
 
-    log(
-        f"Text: {text[:1000] + '...' if len(text) > 1000 else text}",
-        verbose=args["verbose"],
-    )
+    texts = NetworkUtils.extractTextFromURLs(urls=urls, verbose=verbose)
 
-    log(f"Document size: {len(text)} characters", verbose=args["verbose"])
-    summarizer = Summarizer()
-    summary = summarizer.summarize(text=text, verbose=args["verbose"])
+    for textJson in texts:
+        text = textJson["text"]
+        if text is not None:
+            log(
+                f"Text: {text[:1000] + '...' if len(text) > 1000 else text}",
+                verbose=verbose,
+            )
 
-    log(f"Summary: {summary}", verbose=args["verbose"])
+            log(f"Document size: {len(text)} characters", verbose=verbose)
+            summarizer = Summarizer()
+            summary = summarizer.summarize(text=text, verbose=verbose)
+
+            log(f"Summary: {summary}", verbose=verbose)
+        else:
+            log(
+                f"Extracted text for {textJson['url']} is empty!",
+                level="error",
+                verbose=verbose,
+            )
 
 
 if __name__ == "__main__":
-    args = parseArgs()
-    log(f"Arguments: {args}", verbose=args["verbose"])
+    args = ArgUtils.parseArgs()
+    urls = ArgUtils.getURLsFromArgs(args=args)
 
-    runPipielines(args=args)
+    runPipielines(urls=urls, verbose=args["verbose"])
