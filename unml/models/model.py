@@ -1,3 +1,5 @@
+from typing import Any, Dict, Optional
+
 from transformers import Pipeline, pipeline
 
 from unml.utils.consts import ML_TASKS
@@ -8,18 +10,19 @@ class Model:
     Generic class for a ML model
     """
 
-    model_name: str
+    modelName: str
     task: str
     model: Pipeline
 
     def __init__(
         self,
-        model_name: str,
+        modelName: str,
         task: str,
+        **kwargs: Optional[Dict[str, Any]],
     ) -> None:
-        self.model_name = model_name
+        self.modelName = modelName
 
         assert task in ML_TASKS, f"Invalid task: {task}. Must be one of {ML_TASKS}"
 
         self.task = task
-        self.model = pipeline(task, model=model_name)
+        self.model = pipeline(task, model=modelName, **kwargs)
