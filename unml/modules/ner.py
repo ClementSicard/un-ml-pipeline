@@ -16,6 +16,8 @@ class NamedEntityRecognizer:
         match model:
             case "RoBERTa":
                 self.nerExtractor = RoBERTa()
+            case _:
+                self.nerExtractor = RoBERTa()
 
     def predict(self, text: str) -> List[Dict[str, Any]]:
         """

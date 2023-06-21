@@ -1,3 +1,5 @@
+from typing import List
+
 import fitz
 
 from unml.utils.misc import log
@@ -78,3 +80,40 @@ class TextUtils:
         text = text.replace(" .", ".")
 
         return text
+
+    @staticmethod
+    def isEndOfSentence(token: str) -> bool:
+        """
+        Detect if a token is the end of a sentence
+
+        Parameters
+        ----------
+        `token` : `str`
+            The token to be checked
+
+        Returns
+        -------
+        `bool`
+            True if the token is the end of a sentence, False otherwise
+        """
+        return token in {".", "!", "?"}
+
+    @staticmethod
+    def isSentenceValid(sentence: List[str]) -> bool:
+        """
+        Check if a sentence is valid or not
+
+        Parameters
+        ----------
+        `sentence` : `List[str]`
+            The sentence to be checked
+
+        Returns
+        -------
+        `bool`
+            True if the sentence is valid, False otherwise
+        """
+        if len(sentence) <= 1:
+            return False
+
+        return True

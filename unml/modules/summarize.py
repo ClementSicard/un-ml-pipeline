@@ -25,15 +25,15 @@ class Summarizer:
             case _:
                 self.summarizer = DistillBART()
 
-        self.max_chunk_size = self.summarizer.model.tokenizer.model_max_length
+        self.maxChunkSize = self.summarizer.model.tokenizer.model_max_length
         self.tokenizer = self.summarizer.model.tokenizer
 
     def summarize(
         self,
         text: str,
-        min_length: int = SummarizationConsts.SUMMARY_MIN_LENGTH,
-        max_length: int = SummarizationConsts.SUMMARY_MAX_LENGTH,
-        do_sample: bool = False,
+        minLength: int = SummarizationConsts.SUMMARY_MIN_LENGTH,
+        maxLength: int = SummarizationConsts.SUMMARY_MAX_LENGTH,
+        doSample: bool = False,
         verbose: bool = False,
     ) -> str:
         """
@@ -45,11 +45,11 @@ class Summarizer:
         ----------
         `text` : `str`
             The text to be summarized
-        `min_length` : `int`, optional
+        `minLength` : `int`, optional
             Minimum length of the summary, by default `SUMMARY_MIN_LENGTH`
-        `max_length` : `int`, optional
+        `maxLength` : `int`, optional
             Maximum length of the summary, by default `SUMMARY_MAX_LENGTH`
-        `do_sample` : `bool`, optional
+        `doSample` : `bool`, optional
             To do sample or not, by default False
         `verbose` : `bool`, optional
             Verbose argument, by default False
@@ -66,21 +66,25 @@ class Summarizer:
 
         log(f"Number of tokens: {len(tokens)}", verbose=verbose, level="info")
 
-        if len(tokens) <= self.max_chunk_size:
+        # If the number of tokens is less than the maximum chunk size,
+        # summarize the text directly
+        if len(tokens) <= self.maxChunkSize:
             result = self.summarizer.summarize(
                 text=text,
-                min_length=min_length,
-                max_length=max_length,
-                do_sample=do_sample,
+                min_length=minLength,
+                max_length=maxLength,
+                do_sample=doSample,
             )
 
+        # Otherwise, chunk the tokens and summarize each chunk, and recursively
+        # summarize the result(s) until the result is less than the maximum chunk size
         else:
-            input_size = len(tokens)
+            inputSize = len(tokens)
 
-            while input_size > self.max_chunk_size:
-                log(f"Input size: {input_size}", verbose=verbose, level="debug")
+            while inputSize > self.maxChunkSize:
+                log(f"Input size: {inputSize}", verbose=verbose, level="debug")
                 # 2. Chunk the tokens
-                chunks = self.chunk_tokens(tokens)
+                chunks = self.chunkTokens(tokens)
 
                 log(f"Number of chunks: {len(chunks)}", verbose=verbose, level="debug")
 
@@ -89,15 +93,15 @@ class Summarizer:
                 for chunk in chunks:
                     summary = self.summarizer.summarize(
                         text=chunk,
-                        min_length=min_length,
-                        max_length=max_length,
-                        do_sample=do_sample,
+                        min_length=minLength,
+                        max_length=maxLength,
+                        do_sample=doSample,
                     )
                     summaries.append(summary)
 
                 # 4. Join the summaries
                 result = "".join(summaries)
-                input_size = len(self.tokenizer.tokenize(result))
+                inputSize = len(self.tokenizer.tokenize(result))
 
         result = TextUtils.cleanText(text=result)
 
@@ -108,7 +112,7 @@ class Summarizer:
         )
         return result
 
-    def chunk_tokens(self, tokens: List[str]) -> List[str]:
+    def chunkTokens(self, tokens: List[str]) -> List[str]:
         """
         Chunk a list of tokens into smaller chunks.
 
@@ -123,66 +127,31 @@ class Summarizer:
             List of chunks
         """
         chunks: List[str] = []
-        current_chunk: List[str] = []
-        current_sentence: List[str] = []
+        currentChunk: List[str] = []
+        currentSentence: List[str] = []
 
         for token in tokens:
-            current_sentence += [token]
-            is_last = token == tokens[-1]
+            currentSentence += [token]
+            isLast = token == tokens[-1]
 
             # If the token is the end of a sentence or the last token
-            if self.is_eos(token) or is_last:
+            if TextUtils.isEndOfSentence(token) or isLast:
                 # If the current chunk is not full, add the current sentence to it
-                if len(current_chunk) + len(current_sentence) <= self.max_chunk_size:
-                    if self.is_sentence_valid(current_sentence):
-                        current_chunk.extend(current_sentence)
-                    current_sentence = []
+                if len(currentChunk) + len(currentSentence) <= self.maxChunkSize:
+                    if TextUtils.isSentenceValid(currentSentence):
+                        currentChunk.extend(currentSentence)
+                    currentSentence = []
                 # Otherwise, save the chunk and start a new one with the current sentence
                 else:
                     decoded_chunk = self.tokenizer.convert_tokens_to_string(
-                        current_chunk
+                        currentChunk
                     )
                     chunks.append(decoded_chunk)
-                    current_chunk = current_sentence.copy()
-                    current_sentence = []
+                    currentChunk = currentSentence.copy()
+                    currentSentence = []
 
         # For the last chunk, add it to the list of chunks
-        decoded_chunk = self.tokenizer.convert_tokens_to_string(current_chunk)
+        decoded_chunk = self.tokenizer.convert_tokens_to_string(currentChunk)
         chunks.append(decoded_chunk)
 
         return chunks
-
-    def is_eos(self, token: str) -> bool:
-        """
-        Detect if a token is the end of a sentence
-
-        Parameters
-        ----------
-        `token` : `str`
-            The token to be checked
-
-        Returns
-        -------
-        `bool`
-            True if the token is the end of a sentence, False otherwise
-        """
-        return token in {".", "!", "?"}
-
-    def is_sentence_valid(self, sentence: List[str]) -> bool:
-        """
-        Check if a sentence is valid or not
-
-        Parameters
-        ----------
-        `sentence` : `List[str]`
-            The sentence to be checked
-
-        Returns
-        -------
-        `bool`
-            True if the sentence is valid, False otherwise
-        """
-        if len(sentence) <= 1:
-            return False
-
-        return True
