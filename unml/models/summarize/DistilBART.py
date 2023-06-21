@@ -10,7 +10,7 @@ class DistillBART(Model):
     MODEL_NAME = "sshleifer/distilbart-cnn-12-6"
 
     def __init__(self, model_name: str = MODEL_NAME) -> None:
-        super().__init__(model_name=model_name, task="summarization")
+        super().__init__(modelName=model_name, task="summarization")
 
     def summarize(
         self,
