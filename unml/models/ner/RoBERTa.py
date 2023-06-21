@@ -1,5 +1,6 @@
+from typing import Dict, List
+
 from unml.models.model import Model
-from unml.utils.misc import log
 
 
 class RoBERTa(Model):
@@ -10,15 +11,12 @@ class RoBERTa(Model):
     MODEL_NAME = "Jean-Baptiste/roberta-large-ner-english"
 
     def __init__(self, modelName: str = MODEL_NAME) -> None:
-        super().__init__(modelName=modelName, task="ner")
+        super().__init__(modelName=modelName, task="ner", aggregation_strategy="simple")
 
-    def predict(self, text: str) -> str:
+    def recognize(self, text: str) -> List[Dict[str, str | int]]:
         """
         See doc for `NamedEntityRecognizer` class
         """
+        result: List[Dict[str, str | int]] = self.model(text)
 
-        output = self.model(text)
-
-        log(f"Predicted named entities: {output}", level="info", verbose=True)
-
-        return str(output)
+        return result
