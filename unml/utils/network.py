@@ -177,7 +177,8 @@ class NetworkUtils:
         Returns
         -------
         `List[Dict[str, str]]`
-            The contents of the given URLs, of the form `{"url": "...", "text": "..."}`.
+            The contents of the given URLs, in the form of a list of
+            `{"url": "...", "text": "..."}` objects.
         """
         async with aiohttp.ClientSession() as session:
             ret = await asyncio.gather(
