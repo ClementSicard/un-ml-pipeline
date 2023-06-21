@@ -53,7 +53,7 @@ class ArgUtils:
             )
             del parsedArgs["url"]
 
-        log(f"Arguments: {parsedArgs}", verbose=parsedArgs["verbose"])
+        log(f"Arguments: {parsedArgs}", verbose=True)
 
         return parsedArgs
 
