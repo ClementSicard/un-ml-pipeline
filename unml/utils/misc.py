@@ -3,8 +3,11 @@ This module contains miscellaneous functions and classes.
 """
 
 from loguru import logger
+from transformers.utils import logging as hfLogging
 
 from .consts import LoggerConsts
+
+hfLogging.set_verbosity(40)
 
 
 def log(
