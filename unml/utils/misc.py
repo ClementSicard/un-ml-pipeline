@@ -4,10 +4,12 @@ This module contains miscellaneous functions and classes.
 
 from loguru import logger
 
-from .consts import DEFAULT_LOGGER_LEVEL, LOGGER_LEVELS
+from .consts import LoggerConsts
 
 
-def log(message: str, verbose: bool, level: str = DEFAULT_LOGGER_LEVEL) -> None:
+def log(
+    message: str, verbose: bool, level: str = LoggerConsts.DEFAULT_LOGGER_LEVEL
+) -> None:
     """
     Log function to print messages to the console.
 
@@ -21,7 +23,7 @@ def log(message: str, verbose: bool, level: str = DEFAULT_LOGGER_LEVEL) -> None:
         The `loguru` log level, by default DEFAULT_LOGGER_LEVEL
     """
 
-    assert level in LOGGER_LEVELS, f"Invalid level: {level}"
+    assert level in LoggerConsts.LOGGER_LEVELS, f"Invalid level: {level}"
 
     if not verbose:
         return

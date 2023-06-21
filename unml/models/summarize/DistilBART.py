@@ -1,5 +1,5 @@
 from unml.models.model import Model
-from unml.utils.consts import SUMMARY_MAX_LENGTH, SUMMARY_MIN_LENGTH
+from unml.utils.consts import SummarizationConsts
 
 
 class DistillBART(Model):
@@ -15,8 +15,8 @@ class DistillBART(Model):
     def summarize(
         self,
         text: str,
-        min_length: int = SUMMARY_MIN_LENGTH,
-        max_length: int = SUMMARY_MAX_LENGTH,
+        min_length: int = SummarizationConsts.SUMMARY_MIN_LENGTH,
+        max_length: int = SummarizationConsts.SUMMARY_MAX_LENGTH,
         do_sample: bool = False,
     ) -> str:
         """

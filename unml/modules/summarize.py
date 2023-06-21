@@ -5,25 +5,22 @@ This module contains the general `Summarizer` class, to summarize a text.
 from typing import List
 
 from unml.models.summarize.DistilBART import DistillBART
-from unml.utils.consts import (
-    DEFAULT_SUMMARIZATION_MODEL,
-    SUMMARY_MAX_LENGTH,
-    SUMMARY_MIN_LENGTH,
-)
+from unml.utils.consts import SummarizationConsts
 from unml.utils.misc import log
 from unml.utils.text import TextUtils
 
 
 class Summarizer:
     """
-    This class represent an general object to summarize text.
+    This class represents a general object to summarize text.
     """
 
-    MODELS = {"distilbart"}
-
-    def __init__(self, model: str = DEFAULT_SUMMARIZATION_MODEL) -> None:
+    def __init__(
+        self,
+        model: str = SummarizationConsts.DEFAULT_SUMMARIZATION_MODEL,
+    ) -> None:
         match model:
-            case "distilbart":
+            case "DistillBART":
                 self.summarizer = DistillBART()
             case _:
                 self.summarizer = DistillBART()
@@ -34,8 +31,8 @@ class Summarizer:
     def summarize(
         self,
         text: str,
-        min_length: int = SUMMARY_MIN_LENGTH,
-        max_length: int = SUMMARY_MAX_LENGTH,
+        min_length: int = SummarizationConsts.SUMMARY_MIN_LENGTH,
+        max_length: int = SummarizationConsts.SUMMARY_MAX_LENGTH,
         do_sample: bool = False,
         verbose: bool = False,
     ) -> str:

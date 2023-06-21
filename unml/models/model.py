@@ -2,7 +2,7 @@ from typing import Any, Dict, Optional
 
 from transformers import Pipeline, pipeline
 
-from unml.utils.consts import ML_TASKS
+from unml.utils.consts import ModelConsts
 
 
 class Model:
@@ -22,7 +22,9 @@ class Model:
     ) -> None:
         self.modelName = modelName
 
-        assert task in ML_TASKS, f"Invalid task: {task}. Must be one of {ML_TASKS}"
+        assert (
+            task in ModelConsts.ML_TASKS
+        ), f"Invalid task: {task}. Must be one of {ModelConsts.ML_TASKS}"
 
         self.task = task
         self.model = pipeline(task, model=modelName, **kwargs)

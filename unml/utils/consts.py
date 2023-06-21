@@ -1,23 +1,45 @@
 from pathlib import Path
 
-DOWNLOADS_FOLDER = Path.home() / ".unml" / "downloads"
+
+class IOConsts:
+    """
+    IO constants
+    """
+
+    DOWNLOADS_FOLDER = Path.home() / ".unml" / "downloads"
 
 
-"""
-Logger
-"""
-LOGGER_LEVELS = {"debug", "info", "success", "warning", "error", "critical"}
-DEFAULT_LOGGER_LEVEL = "debug"
+class LoggerConsts:
+    """
+    Logger constants
+    """
+
+    LOGGER_LEVELS = {"debug", "info", "success", "warning", "error", "critical"}
+    DEFAULT_LOGGER_LEVEL = "debug"
 
 
-"""
-Models
-"""
-ML_TASKS = {"summarization", "automatic-speech-recognition", "ner", "translation"}
+class ModelConsts:
+    """
+    Models constants
+    """
 
-"""
-Summarization
-"""
-SUMMARY_MIN_LENGTH = 30
-SUMMARY_MAX_LENGTH = 180
-DEFAULT_SUMMARIZATION_MODEL = "distillbart"
+    ML_TASKS = {"summarization", "automatic-speech-recognition", "ner", "translation"}
+
+
+class SummarizationConsts:
+    """
+    Summarization constants
+    """
+
+    MODELS = {"DistillBART"}
+    SUMMARY_MIN_LENGTH = 30
+    SUMMARY_MAX_LENGTH = 180
+    DEFAULT_SUMMARIZATION_MODEL = "DistillBART"
+
+
+class NERConsts:
+    """
+    Named Entity Recognition constants
+    """
+
+    DEFAULT_NER_MODEL = "RoBERTa"
