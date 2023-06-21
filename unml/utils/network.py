@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 import aiohttp
 from requests import get
 
-from unml.utils.consts import DOWNLOADS_FOLDER
+from unml.utils.consts import IOConsts
 from unml.utils.io import IOUtils
 from unml.utils.misc import log
 from unml.utils.text import TextUtils
@@ -44,8 +44,8 @@ class NetworkUtils:
 
         if output is None:
             file_name = url.split("/")[-1]
-            os.makedirs(DOWNLOADS_FOLDER, exist_ok=True)
-            output = os.path.join(DOWNLOADS_FOLDER, file_name)
+            os.makedirs(IOConsts.DOWNLOADS_FOLDER, exist_ok=True)
+            output = os.path.join(IOConsts.DOWNLOADS_FOLDER, file_name)
 
         with open(output, "wb") as f:
             f.write(get(url).content)
@@ -141,7 +141,8 @@ class NetworkUtils:
 
                 if savedFilePath is not None:
                     extractedText: str = TextUtils.extractTextFromFile(
-                        path=savedFilePath
+                        path=savedFilePath,
+                        verbose=verbose,
                     )
                     cleanedText = TextUtils.cleanText(text=extractedText)
                 else:
