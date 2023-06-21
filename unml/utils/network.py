@@ -86,7 +86,6 @@ class NetworkUtils:
                 urls=urls,
                 headers=headers,
                 verbose=verbose,
-                toJson=True,  # True --> {"url": "...", "text": "..."}
             )
         )
 
@@ -102,15 +101,15 @@ class NetworkUtils:
         return results
 
     @staticmethod
-    async def get(
+    async def getExtractedTextFromURL(
         url: str,
         session: aiohttp.ClientSession,
         headers: Optional[Dict[str, Any]] = None,
-        toJson: bool = False,
         verbose: bool = False,
-    ) -> str | Dict[str, str | None] | None:
+    ) -> Dict[str, str | None]:
         """
-        Wrapper around an async HTTP GET request
+        Wrapper around an async HTTP GET request. The response is then parsed,
+        the text extracted and cleaned.
 
         Parameters
         ----------
@@ -128,30 +127,32 @@ class NetworkUtils:
 
         Returns
         -------
-        `str | Dict[str, str | None] | None`
-            The text content of the URL. `None` if there was an issue
+        `Dict[str, str | None] | None`
+            The text content of file corresponding to the URL. `None` if there was an issue
         """
         try:
             async with session.get(url=url, headers=headers) as response:
                 resp = await response.read()
-
-                log(f"Response type: {type(resp)}", verbose=True)
 
                 savedFilePath = IOUtils.saveFile(
                     fileName=url.split("/")[-1],
                     content=resp,
                 )
 
-                extractedText: str = TextUtils.extractTextFromFile(path=savedFilePath)
+                if savedFilePath is not None:
+                    extractedText: str = TextUtils.extractTextFromFile(
+                        path=savedFilePath
+                    )
+                    cleanedText = TextUtils.cleanText(text=extractedText)
+                else:
+                    cleanedText = None
 
-                if toJson:
-                    return {"url": url, "text": extractedText}
+                return {"url": url, "text": cleanedText}
 
-                return extractedText
         except Exception as e:
             log(f"Unable to get url {url} due to {e}.", level="error", verbose=verbose)
-            if toJson:
-                return {"url": url, "text": None}
+
+            return {"url": url, "text": None}
 
             return None
 
@@ -160,8 +161,7 @@ class NetworkUtils:
         urls: List[str],
         headers: Optional[Dict[str, Any]] = None,
         verbose: bool = False,
-        toJson: bool = False,
-    ) -> List[Dict[str, str]] | List[str]:
+    ) -> List[Dict[str, str]]:
         """
         Helper function to download multiple URLs asynchronously.
 
@@ -176,17 +176,16 @@ class NetworkUtils:
 
         Returns
         -------
-        `List[str | Dict[str, str]]`
-            The contents of the given URLs
+        `List[Dict[str, str]]`
+            The contents of the given URLs, of the form `{"url": "...", "text": "..."}`.
         """
         async with aiohttp.ClientSession() as session:
             ret = await asyncio.gather(
                 *[
-                    NetworkUtils.get(
+                    NetworkUtils.getExtractedTextFromURL(
                         url=url,
                         session=session,
                         headers=headers,
-                        toJson=toJson,
                     )
                     for url in urls
                 ]
