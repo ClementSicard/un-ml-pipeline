@@ -1,6 +1,6 @@
-import os
+from pathlib import Path
 
-DOWNLOADS_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "downloads")
+DOWNLOADS_FOLDER = Path.home() / ".unml" / "downloads"
 
 
 """
