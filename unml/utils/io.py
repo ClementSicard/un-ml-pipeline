@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from unml.utils.consts import DOWNLOADS_FOLDER
 from unml.utils.misc import log
@@ -12,7 +13,7 @@ class IOUtils:
     @staticmethod
     def saveFile(
         fileName: str, content: str | bytes, verbose: bool = False
-    ) -> str | None:
+    ) -> Optional[str]:
         """
         Save a the contents of a file to a given path.
 
@@ -26,7 +27,7 @@ class IOUtils:
 
         Returns
         -------
-        `str | None`
+        `Optional[str]`
             The path to the saved file, or `None` if an error occurred
         """
         os.makedirs(DOWNLOADS_FOLDER, exist_ok=True)
