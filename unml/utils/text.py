@@ -11,7 +11,7 @@ class TextUtils:
     """
 
     @staticmethod
-    def extractTextFromPDF(path: str) -> str:
+    def extractTextFromPDF(path: str, verbose: bool = False) -> str:
         """
         Extract text from a PDF file.
 
@@ -19,13 +19,15 @@ class TextUtils:
         ----------
         `path` : `str`
             The path to the PDF file
+        `verbose` : `bool`
+            The verbose argument. Defaults to `False`.
 
         Returns
         -------
         `str`
             The text from the PDF file
         """
-        log("Extracting text from PDF...", level="info", verbose=True)
+        log("Extracting text from PDF...", level="info", verbose=verbose)
 
         doc = fitz.open(path)
         text = [page.get_text() for page in doc]
@@ -33,7 +35,7 @@ class TextUtils:
         return "\n".join(text)
 
     @staticmethod
-    def extractTextFromFile(path: str) -> str:
+    def extractTextFromFile(path: str, verbose: bool = False) -> str:
         """
         Extract text from a file.
 
@@ -41,16 +43,18 @@ class TextUtils:
         ----------
         `path` : `str`
             The path to the file
+        `verbose` : `bool`
+            The verbose argument. Defaults to `False`.
 
         Returns
         -------
         `str`
             The text from the file
         """
-        log(f"Extracting text from '{path}'...", level="info", verbose=True)
+        log(f"Extracting text from '{path}'...", level="info", verbose=verbose)
 
         if path.lower().endswith(".pdf"):
-            text = TextUtils.extractTextFromPDF(path=path)
+            text = TextUtils.extractTextFromPDF(path=path, verbose=verbose)
         else:
             with open(path, "r", encoding="utf-8") as f:
                 text = f.read()
