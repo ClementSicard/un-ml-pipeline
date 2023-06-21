@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from transformers import Pipeline, pipeline
 
@@ -18,7 +18,7 @@ class Model:
         self,
         modelName: str,
         task: str,
-        **kwargs: Optional[Dict[str, Any]],
+        **kwargs: Dict[str, Any],
     ) -> None:
         self.modelName = modelName
 
