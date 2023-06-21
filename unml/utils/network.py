@@ -7,7 +7,9 @@ import aiohttp
 from requests import get
 
 from unml.utils.consts import DOWNLOADS_FOLDER
+from unml.utils.io import IOUtils
 from unml.utils.misc import log
+from unml.utils.text import TextUtils
 
 
 class NetworkUtils:
@@ -132,12 +134,20 @@ class NetworkUtils:
         try:
             async with session.get(url=url, headers=headers) as response:
                 resp = await response.read()
-                text: str = resp.decode("utf-8")
+
+                log(f"Response type: {type(resp)}", verbose=True)
+
+                savedFilePath = IOUtils.saveFile(
+                    fileName=url.split("/")[-1],
+                    content=resp,
+                )
+
+                extractedText: str = TextUtils.extractTextFromFile(path=savedFilePath)
 
                 if toJson:
-                    return {"url": url, "text": text}
+                    return {"url": url, "text": extractedText}
 
-                return text
+                return extractedText
         except Exception as e:
             log(f"Unable to get url {url} due to {e}.", level="error", verbose=verbose)
             if toJson:
