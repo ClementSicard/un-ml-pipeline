@@ -5,8 +5,6 @@ This module contains helpers to parse command line arguments.
 from argparse import ArgumentParser
 from typing import Any, Dict, List
 
-from loguru import logger
-
 from unml.utils.misc import isCorrectURL, log
 
 
@@ -84,7 +82,11 @@ class ArgUtils:
             if isCorrectURL(url=url):
                 results.append(url)
             else:
-                logger.error(f"'{args.get('url')}' is not a valid URL")
+                log(
+                    f"'{args.get('url')}' is not a valid URL",
+                    level="error",
+                    verbose=True,
+                )
                 exit()
 
         # Case 2: file CLI arg is specified
@@ -96,17 +98,33 @@ class ArgUtils:
                         if isCorrectURL(line):
                             results.append(line)
                         else:
-                            logger.warning(f"'{args.get('url')}' is not a valid URL")
+                            log(
+                                f"'{args.get('url')}' is not a valid URL",
+                                level="warning",
+                                verbose=True,
+                            )
 
                 if not results:
-                    logger.error(f"No valid URLs found in {path}.")
+                    log(
+                        f"No valid URLs found in {path}.",
+                        level="error",
+                        verbose=True,
+                    )
                     exit()
 
             except FileNotFoundError:
-                logger.error(f"File '{path}' not found")
+                log(
+                    f"File '{path}' not found",
+                    level="error",
+                    verbose=True,
+                )
                 exit()
             except Exception as err:
-                logger.error(f"Error while reading file '{path}': {err}")
+                log(
+                    f"Error while reading file '{path}': {err}",
+                    level="error",
+                    verbose=True,
+                )
                 exit()
 
         return results
