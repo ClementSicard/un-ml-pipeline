@@ -1,5 +1,7 @@
 from typing import List
 
+from tqdm import tqdm
+
 from unml.modules.summarize import Summarizer
 from unml.utils.args import ArgUtils
 from unml.utils.misc import log
@@ -21,7 +23,7 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
 
     texts = NetworkUtils.extractTextFromURLs(urls=urls, verbose=verbose)
 
-    for textJson in texts:
+    for textJson in tqdm(texts):
         text = textJson["text"]
         if text is not None:
             log(
