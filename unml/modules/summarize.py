@@ -11,6 +11,7 @@ from unml.utils.consts import (
     SUMMARY_MIN_LENGTH,
 )
 from unml.utils.misc import log
+from unml.utils.text import TextUtils
 
 
 class Summarizer:
@@ -100,6 +101,8 @@ class Summarizer:
                 # 4. Join the summaries
                 result = "".join(summaries)
                 input_size = len(self.tokenizer.tokenize(result))
+
+        result = TextUtils.cleanText(text=result)
 
         log(
             f"Done! Result is {len(result)} characters long",
