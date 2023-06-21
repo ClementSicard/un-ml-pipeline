@@ -82,7 +82,7 @@ class NetworkUtils:
 
         start = time.time()
         results = asyncio.run(
-            NetworkUtils.downloadMultipleURLs(
+            NetworkUtils.getExtractedTextFromMultipleURLs(
                 urls=urls,
                 headers=headers,
                 verbose=verbose,
@@ -157,7 +157,7 @@ class NetworkUtils:
             return None
 
     @staticmethod
-    async def downloadMultipleURLs(
+    async def getExtractedTextFromMultipleURLs(
         urls: List[str],
         headers: Optional[Dict[str, Any]] = None,
         verbose: bool = False,
