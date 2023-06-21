@@ -1,4 +1,5 @@
 from unml.models.model import Model
+from unml.utils.misc import log
 
 
 class RoBERTa(Model):
@@ -8,8 +9,8 @@ class RoBERTa(Model):
 
     MODEL_NAME = "Jean-Baptiste/roberta-large-ner-english"
 
-    def __init__(self, model_name: str = MODEL_NAME) -> None:
-        super().__init__(modelName=model_name, task="ner")
+    def __init__(self, modelName: str = MODEL_NAME) -> None:
+        super().__init__(modelName=modelName, task="ner")
 
     def predict(self, text: str) -> str:
         """
@@ -17,5 +18,7 @@ class RoBERTa(Model):
         """
 
         output = self.model(text)
+
+        log(f"Predicted named entities: {output}", level="info", verbose=True)
 
         return str(output)
