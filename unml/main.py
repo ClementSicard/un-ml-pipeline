@@ -2,6 +2,7 @@ from typing import List
 
 from tqdm import tqdm
 
+from unml.modules.ner import NamedEntityRecognizer
 from unml.modules.summarize import Summarizer
 from unml.utils.args import ArgUtils
 from unml.utils.misc import log
@@ -21,9 +22,15 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
         Controls the verbose of the output, by default False
     """
 
+    """
+    1. Get text from files corresponding to URLs
+    """
+    summarizer = Summarizer()
+    ner = NamedEntityRecognizer()
+
     texts = NetworkUtils.extractTextFromURLs(urls=urls, verbose=verbose)
 
-    for textJson in tqdm(texts):
+    for textJson in tqdm(texts) if not verbose else texts:
         text = textJson["text"]
         if text is not None:
             log(
@@ -32,10 +39,18 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
             )
 
             log(f"Document size: {len(text)} characters", verbose=verbose)
-            summarizer = Summarizer()
-            summary = summarizer.summarize(text=text, verbose=verbose)
 
+            """
+            2. Summarize text
+            """
+            summary = summarizer.summarize(text=text, verbose=verbose)
             log(f"Summary: {summary}", verbose=verbose)
+
+            """
+            3. Named Entity Recognition
+            """
+            ner.recognize(text=text, verbose=verbose)
+
         else:
             log(
                 f"Extracted text for {textJson['url']} is empty!",
