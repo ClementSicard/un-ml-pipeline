@@ -37,7 +37,6 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
         result = {
             "url": textJson["url"],
             "summary": None,
-            "text": text,
             "named_entities": {
                 "list": None,
                 "detailed": None,
@@ -45,12 +44,11 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
         }
 
         if text is not None:
+            log(f"Document size: {len(text)} characters", verbose=verbose)
             log(
                 f"Text: {text[:1000] + '...' if len(text) > 1000 else text}",
                 verbose=verbose,
             )
-
-            log(f"Document size: {len(text)} characters", verbose=verbose)
 
             """
             2. Summarize text
@@ -62,7 +60,7 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
             """
             3. Named Entity Recognition
             """
-            entities, detailed = ner.recognize(text=text, verbose=verbose)
+            entities, detailed = ner.recognizeFromChunked(text=text, verbose=verbose)
             result["named_entities"]["list"] = entities
             result["named_entities"]["detailed"] = detailed
 

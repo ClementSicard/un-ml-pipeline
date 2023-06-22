@@ -2,7 +2,6 @@
 This module contains the general `Summarizer` class, to summarize a text.
 """
 
-from typing import List
 
 from unml.models.summarize.DistilBARTCNN import DistillBARTCNN
 from unml.models.summarize.DistilBARTXSUM import DistillBARTXSUM
@@ -30,8 +29,11 @@ class Summarizer:
             case _:
                 self.summarizer = DistillBARTXSUM()
 
-        self.maxChunkSize = self.summarizer.model.tokenizer.model_max_length
+        self.maxChunkSize = self.summarizer.model.tokenizer.model_max_length - 10
         self.tokenizer = self.summarizer.model.tokenizer
+
+        log(f"{self.summarizer.__class__} instantiated!", verbose=True, level="success")
+        log(f"Max chunk size: {self.maxChunkSize}", verbose=True, level="info")
 
     def summarize(
         self,
@@ -85,10 +87,14 @@ class Summarizer:
         # Otherwise, chunk the tokens and summarize each chunk, and recursively
         # summarize the result(s) until the result is less than the maximum chunk size
         else:
+            resultTokens = tokens.copy()
             while nTokens > self.maxChunkSize:
                 log(f"Input size: {nTokens}", verbose=verbose, level="debug")
                 # 2. Chunk the tokens
-                chunks = self.chunkTokens(tokens)
+                chunks = TextUtils.chunkTokens(
+                    tokens=resultTokens,
+                    tokenizer=self.tokenizer,
+                )
 
                 log(f"Number of chunks: {len(chunks)}", verbose=verbose, level="debug")
 
@@ -121,45 +127,3 @@ class Summarizer:
         )
 
         return result
-
-    def chunkTokens(self, tokens: List[str]) -> List[str]:
-        """
-        Chunk a list of tokens into smaller chunks.
-
-        Parameters
-        ----------
-        `tokens` : `List[str]`
-            Full list of tokens to be chunked into multiple smaller chunks
-
-        Returns
-        -------
-        `List[str]`
-            List of chunks
-        """
-        chunks: List[str] = []
-        currentChunk: List[str] = []
-        currentSentence: List[str] = []
-
-        for token in tokens:
-            currentSentence += [token]
-            isLast = token == tokens[-1]
-
-            # If the token is the end of a sentence or the last token
-            if TextUtils.isEndOfSentence(token) or isLast:
-                # If the current chunk is not full, add the current sentence to it
-                if len(currentChunk) + len(currentSentence) <= self.maxChunkSize:
-                    if TextUtils.isSentenceValid(currentSentence):
-                        currentChunk.extend(currentSentence)
-                    currentSentence = []
-                # Otherwise, save the chunk and start a new one with the current sentence
-                else:
-                    decodedChunk = self.tokenizer.convert_tokens_to_string(currentChunk)
-                    chunks.append(decodedChunk)
-                    currentChunk = currentSentence.copy()
-                    currentSentence = []
-
-        # For the last chunk, add it to the list of chunks
-        decodedChunk = self.tokenizer.convert_tokens_to_string(currentChunk)
-        chunks.append(decodedChunk)
-
-        return chunks
