@@ -134,7 +134,7 @@ class NetworkUtils:
             async with session.get(url=url, headers=headers) as response:
                 resp = await response.read()
 
-                savedFilePath = IOUtils.saveFile(
+                savedFilePath = IOUtils.saveFileToDownloads(
                     fileName=url.split("/")[-1],
                     content=resp,
                 )

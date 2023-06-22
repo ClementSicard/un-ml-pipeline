@@ -27,6 +27,13 @@ class ArgUtils:
 
         parser.add_argument("-u", "--url", type=str, required=False)
         parser.add_argument("-f", "--file", type=str, required=False)
+        parser.add_argument(
+            "-o",
+            "--output",
+            type=str,
+            required=False,
+            default="output.json",
+        )
 
         parser.add_argument(
             "-v",
@@ -43,7 +50,7 @@ class ArgUtils:
                 level="error",
                 verbose=True,
             )
-            exit()
+            exit(1)
 
         if parsedArgs.get("url") and parsedArgs.get("file"):
             log(
@@ -87,7 +94,7 @@ class ArgUtils:
                     level="error",
                     verbose=True,
                 )
-                exit()
+                exit(1)
 
         # Case 2: file CLI arg is specified
         elif args.get("file"):
@@ -96,6 +103,10 @@ class ArgUtils:
                 with open(path, "r") as f:
                     for line in f.readlines():
                         line = line.strip()
+
+                        if line.startswith("#"):
+                            continue
+
                         if isCorrectURL(line):
                             results.append(line)
                         else:
@@ -111,7 +122,7 @@ class ArgUtils:
                         level="error",
                         verbose=True,
                     )
-                    exit()
+                    exit(1)
 
             except FileNotFoundError:
                 log(
@@ -119,13 +130,14 @@ class ArgUtils:
                     level="error",
                     verbose=True,
                 )
-                exit()
+                exit(1)
             except Exception as err:
                 log(
                     f"Error while reading file '{path}': {err}",
                     level="error",
                     verbose=True,
                 )
-                exit()
+                exit(1)
 
+        log(f"Number of URLs: {len(results)}", verbose=True, level="success")
         return results
