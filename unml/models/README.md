@@ -2,6 +2,6 @@
 
 Models for:
 
-- Named Entity Recognition ([`ner`](unml/models/ner/README.md))
-- Speech-to-Text ([`stt`](unml/models/stt/README.md))
-- Summarization ([`summarize`](unml/models/summarize/README.md))
+- Named Entity Recognition ([`ner`](ner/README.md))
+- Speech-to-Text ([`stt`](stt/README.md))
+- Summarization ([`summarize`](summarize/README.md))

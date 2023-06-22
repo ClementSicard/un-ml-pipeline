@@ -1,3 +1,3 @@
-# Named Entity Recognition models
+# Speech-to-Text models
 
-- RoBERTa ([`RoBERTa.py`](unml/models/ner/RoBERTa.py))
+- OpenAI Whisper ([`whisper.py`](whisper.py))
