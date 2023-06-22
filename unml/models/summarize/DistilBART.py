@@ -9,24 +9,24 @@ class DistillBART(Model):
 
     MODEL_NAME = "sshleifer/distilbart-cnn-12-6"
 
-    def __init__(self, model_name: str = MODEL_NAME) -> None:
-        super().__init__(modelName=model_name, task="summarization")
+    def __init__(self, modelName: str = MODEL_NAME) -> None:
+        super().__init__(modelName=modelName, task="summarization")
 
     def summarize(
         self,
         text: str,
-        min_length: int = SummarizationConsts.SUMMARY_MIN_LENGTH,
-        max_length: int = SummarizationConsts.SUMMARY_MAX_LENGTH,
-        do_sample: bool = False,
+        minLength: int = SummarizationConsts.SUMMARY_MIN_LENGTH,
+        maxLength: int = SummarizationConsts.SUMMARY_MAX_LENGTH,
+        doSample: bool = False,
     ) -> str:
         """
         See doc for `Summarizer` class
         """
         output = self.model(
             text,
-            min_length=min_length,
-            max_length=max_length,
-            do_sample=do_sample,
+            min_length=minLength,
+            max_length=maxLength,
+            do_sample=doSample,
         )
 
         return str(output[0]["summary_text"])

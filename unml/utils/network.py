@@ -43,9 +43,9 @@ class NetworkUtils:
         log(f"Downloading document from {url}...", level="info", verbose=verbose)
 
         if output is None:
-            file_name = url.split("/")[-1]
+            fileName = url.split("/")[-1]
             os.makedirs(IOConsts.DOWNLOADS_FOLDER, exist_ok=True)
-            output = os.path.join(IOConsts.DOWNLOADS_FOLDER, file_name)
+            output = os.path.join(IOConsts.DOWNLOADS_FOLDER, fileName)
 
         with open(output, "wb") as f:
             f.write(get(url).content)

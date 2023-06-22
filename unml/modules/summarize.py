@@ -71,9 +71,9 @@ class Summarizer:
         if len(tokens) <= self.maxChunkSize:
             result = self.summarizer.summarize(
                 text=text,
-                min_length=minLength,
-                max_length=maxLength,
-                do_sample=doSample,
+                minLength=minLength,
+                maxLength=maxLength,
+                doSample=doSample,
             )
 
         # Otherwise, chunk the tokens and summarize each chunk, and recursively
@@ -93,9 +93,9 @@ class Summarizer:
                 for chunk in chunks:
                     summary = self.summarizer.summarize(
                         text=chunk,
-                        min_length=minLength,
-                        max_length=maxLength,
-                        do_sample=doSample,
+                        minLength=minLength,
+                        maxLength=maxLength,
+                        doSample=doSample,
                     )
                     summaries.append(summary)
 
@@ -143,15 +143,13 @@ class Summarizer:
                     currentSentence = []
                 # Otherwise, save the chunk and start a new one with the current sentence
                 else:
-                    decoded_chunk = self.tokenizer.convert_tokens_to_string(
-                        currentChunk
-                    )
-                    chunks.append(decoded_chunk)
+                    decodedChunk = self.tokenizer.convert_tokens_to_string(currentChunk)
+                    chunks.append(decodedChunk)
                     currentChunk = currentSentence.copy()
                     currentSentence = []
 
         # For the last chunk, add it to the list of chunks
-        decoded_chunk = self.tokenizer.convert_tokens_to_string(currentChunk)
-        chunks.append(decoded_chunk)
+        decodedChunk = self.tokenizer.convert_tokens_to_string(currentChunk)
+        chunks.append(decodedChunk)
 
         return chunks
