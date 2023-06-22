@@ -33,7 +33,7 @@ def getPenultimateFunctionName() -> str:
             penultimate_frame.filename,
             IOConsts.PROJECT_ROOT,
         )
-        return f"{fileName}:{penultimate_frame.function}:{penultimate_frame.lineno}"
+        return f"{fileName}:{penultimate_frame.lineno} | {penultimate_frame.function}"
     else:
         return "N/A"
 
