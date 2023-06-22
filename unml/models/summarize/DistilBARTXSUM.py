@@ -1,13 +1,14 @@
 from unml.models.model import Model
-from unml.utils.consts import SummarizationConsts
+from unml.utils.consts.summarize import SummarizationConsts
 
 
-class DistillBART(Model):
+class DistillBARTXSUM(Model):
     """
-    Class for DistillBART (Sanh et al., 2019) model
+    Class for DistillBART (Sanh et al., 2019) model, trained on XSUM dataset
+    to generate very short summaries of news articles.
     """
 
-    MODEL_NAME = "sshleifer/distilbart-cnn-12-6"
+    MODEL_NAME = "sshleifer/distilbart-xsum-12-1"
 
     def __init__(self, modelName: str = MODEL_NAME) -> None:
         super().__init__(modelName=modelName, task="summarization")
@@ -16,7 +17,7 @@ class DistillBART(Model):
         self,
         text: str,
         minLength: int = SummarizationConsts.SUMMARY_MIN_LENGTH,
-        maxLength: int = SummarizationConsts.SUMMARY_MAX_LENGTH,
+        maxLength: int = SummarizationConsts.SUMMARY_MAX_TOKEN_LENGTH,
         doSample: bool = False,
     ) -> str:
         """

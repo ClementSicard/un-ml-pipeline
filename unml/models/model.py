@@ -2,7 +2,7 @@ from typing import Any
 
 from transformers import Pipeline, pipeline
 
-from unml.utils.consts import ModelConsts
+from unml.utils.consts.model import ModelConsts
 
 
 class Model:

@@ -1,3 +1,4 @@
 # Document summarization models
 
-- DistillBART ([`DistillBART.py`](DistilBART.py))
+- DistillBART-CNN ([`DistillBARTCNN.py`](DistilBARTCNN.py))
+- DistillBART-XSUM ([`DistillBARTXSUM.py`](DistilBARTXSUM.py))
