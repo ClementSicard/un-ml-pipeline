@@ -81,9 +81,10 @@ class TextUtils:
 
         text = re.sub(r"\n", " ", text)
         text = re.sub(r"\s+", " ", text)
+        text = re.sub(r"\(.*[A-Z].*\)", "", text)
         text = text.replace(" .", ".")
 
-        return text
+        return text.strip()
 
     @staticmethod
     def isEndOfSentence(token: str) -> bool:
