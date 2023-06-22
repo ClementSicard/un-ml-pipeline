@@ -16,6 +16,8 @@ class Summarizer:
     This class represents a general object to summarize text.
     """
 
+    summarizer: DistillBARTCNN | DistillBARTXSUM
+
     def __init__(
         self,
         model: str = SummarizationConsts.DEFAULT_SUMMARIZATION_MODEL,
