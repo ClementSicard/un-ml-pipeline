@@ -69,7 +69,6 @@ class IOUtils:
             return filePath
 
         try:
-            log(f"Type of content: {type(content)}", verbose=True)
             with open(filePath, "wb" if isinstance(content, bytes) else "w") as f:
                 if not isinstance(content, (dict, list)):
                     f.write(content)
