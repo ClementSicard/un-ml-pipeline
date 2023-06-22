@@ -29,13 +29,9 @@ def getPenultimateFunctionName() -> str:
     # Get the penultimate frame if exists
     if len(stack) >= 3:
         penultimate_frame = stack[2]
-        fileName = (
-            os.path.relpath(
-                penultimate_frame.filename,
-                IOConsts.PROJECT_ROOT,
-            )
-            .replace("/", ".")
-            .replace(".py", "")
+        fileName = os.path.relpath(
+            penultimate_frame.filename,
+            IOConsts.PROJECT_ROOT,
         )
         return f"{fileName}:{penultimate_frame.function}:{penultimate_frame.lineno}"
     else:
