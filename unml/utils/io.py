@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from unml.utils.consts.io import IOConsts
 from unml.utils.misc import log
@@ -41,7 +41,7 @@ class IOUtils:
     @staticmethod
     def saveFile(
         filePath: str,
-        content: str | bytes | Dict[Any, Any],
+        content: str | bytes | Dict[Any, Any] | List[Any],
         overwrite: bool = False,
     ) -> Optional[str]:
         """
@@ -91,14 +91,14 @@ class IOUtils:
             exit(1)
 
     @staticmethod
-    def saveResults(results: Dict[str, Any], path: str) -> Optional[str]:
+    def saveResults(results: List[Dict[str, Any]], path: str) -> Optional[str]:
         """
         Save the results of a task to a file.
 
         Parameters
         ----------
-        `results` : `Dict[str, Any]`
-            The results of the task
+        `results` : `List[Dict[str, Any]]`
+            The results of the tasks
         `path` : `str`
             The path to the output file
 

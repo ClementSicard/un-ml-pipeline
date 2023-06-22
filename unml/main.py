@@ -5,6 +5,7 @@ from tqdm import tqdm
 from unml.modules.ner import NamedEntityRecognizer
 from unml.modules.summarize import Summarizer
 from unml.utils.args import ArgUtils
+from unml.utils.io import IOUtils
 from unml.utils.misc import log
 from unml.utils.network import NetworkUtils
 
@@ -29,9 +30,20 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
     ner = NamedEntityRecognizer()
 
     texts = NetworkUtils.extractTextFromURLs(urls=urls, verbose=verbose)
+    results = []
 
     for textJson in tqdm(texts) if not verbose else texts:
         text = textJson["text"]
+        result = {
+            "url": textJson["url"],
+            "summary": None,
+            "text": text,
+            "named_entities": {
+                "list": None,
+                "detailed": None,
+            },
+        }
+
         if text is not None:
             log(
                 f"Text: {text[:1000] + '...' if len(text) > 1000 else text}",
@@ -45,11 +57,16 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
             """
             summary = summarizer.summarize(text=text, verbose=verbose)
             log(f"Summary: {summary}", verbose=verbose)
+            result["summary"] = summary
 
             """
             3. Named Entity Recognition
             """
-            ner.recognize(text=text, verbose=verbose)
+            entities, detailed = ner.recognize(text=text, verbose=verbose)
+            result["named_entities"]["list"] = entities
+            result["named_entities"]["detailed"] = detailed
+
+            results.append(result)
 
         else:
             log(
@@ -57,6 +74,11 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
                 level="error",
                 verbose=verbose,
             )
+
+    # Save results to a JSON file
+    IOUtils.saveResults(results=results, path=args["output"])
+
+    log("Done!", level="success", verbose=verbose)
 
 
 if __name__ == "__main__":

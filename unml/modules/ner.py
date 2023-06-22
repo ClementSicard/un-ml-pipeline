@@ -1,7 +1,7 @@
-from typing import Dict, List
+from typing import Any, Dict, List, Tuple
 
 from unml.models.ner.RoBERTa import RoBERTa
-from unml.utils.consts import NERConsts
+from unml.utils.consts.ner import NERConsts
 from unml.utils.misc import log
 
 
@@ -20,7 +20,9 @@ class NamedEntityRecognizer:
             case _:
                 self.nerExtractor = RoBERTa()
 
-    def recognize(self, text: str, verbose: bool = False) -> List[Dict[str, str | int]]:
+    def recognize(
+        self, text: str, verbose: bool = False
+    ) -> Tuple[List[str], List[Dict[str, Any]]]:
         """
         Recognize named entities in a text.
 
@@ -31,7 +33,7 @@ class NamedEntityRecognizer:
 
         Returns
         -------
-        `List[Dict[str, str | int]]`
+        `Tuple[List[str], List[Dict[str, Any]]]`
             The list of named entities in the text in the format:
             ```
             [
@@ -48,10 +50,15 @@ class NamedEntityRecognizer:
         """
         results = self.nerExtractor.recognize(text)
 
+        for result in results:
+            result["score"] = float(f'{result["score"]:.3f}')
+
+        entities = sorted(list({str(r["word"]).strip() for r in results}))
+
         log(
-            f"Named entities: {sorted([r['word'] for r in results])}",
+            f"Named entities: {entities[:10] if len(entities) > 10 else entities}",
             verbose=verbose,
             level="debug",
         )
 
-        return results
+        return entities, results

@@ -4,8 +4,9 @@ This module contains the general `Summarizer` class, to summarize a text.
 
 from typing import List
 
-from unml.models.summarize.DistilBART import DistillBART
-from unml.utils.consts import SummarizationConsts
+from unml.models.summarize.DistilBARTCNN import DistillBARTCNN
+from unml.models.summarize.DistilBARTXSUM import DistillBARTXSUM
+from unml.utils.consts.summarize import SummarizationConsts
 from unml.utils.misc import log
 from unml.utils.text import TextUtils
 
@@ -20,10 +21,12 @@ class Summarizer:
         model: str = SummarizationConsts.DEFAULT_SUMMARIZATION_MODEL,
     ) -> None:
         match model:
-            case "DistillBART":
-                self.summarizer = DistillBART()
+            case "DistillBART-cnn":
+                self.summarizer = DistillBARTCNN()
+            case "DistillBART-xsum":
+                self.summarizer = DistillBARTXSUM()
             case _:
-                self.summarizer = DistillBART()
+                self.summarizer = DistillBARTXSUM()
 
         self.maxChunkSize = self.summarizer.model.tokenizer.model_max_length
         self.tokenizer = self.summarizer.model.tokenizer
@@ -32,7 +35,7 @@ class Summarizer:
         self,
         text: str,
         minLength: int = SummarizationConsts.SUMMARY_MIN_LENGTH,
-        maxLength: int = SummarizationConsts.SUMMARY_MAX_LENGTH,
+        maxLength: int = SummarizationConsts.SUMMARY_MAX_TOKEN_LENGTH,
         doSample: bool = False,
         verbose: bool = False,
     ) -> str:
@@ -48,7 +51,7 @@ class Summarizer:
         `minLength` : `int`, optional
             Minimum length of the summary, by default `SUMMARY_MIN_LENGTH`
         `maxLength` : `int`, optional
-            Maximum length of the summary, by default `SUMMARY_MAX_LENGTH`
+            Maximum length of the summary, by default `SUMMARY_MAX_TOKEN_LENGTH`
         `doSample` : `bool`, optional
             To do sample or not, by default False
         `verbose` : `bool`, optional
@@ -63,6 +66,7 @@ class Summarizer:
 
         # 1. Extract tokens from text
         tokens = self.tokenizer.tokenize(text)
+        nTokens = len(tokens)
 
         log(f"Number of tokens: {len(tokens)}", verbose=verbose, level="info")
 
@@ -79,10 +83,8 @@ class Summarizer:
         # Otherwise, chunk the tokens and summarize each chunk, and recursively
         # summarize the result(s) until the result is less than the maximum chunk size
         else:
-            inputSize = len(tokens)
-
-            while inputSize > self.maxChunkSize:
-                log(f"Input size: {inputSize}", verbose=verbose, level="debug")
+            while nTokens > self.maxChunkSize:
+                log(f"Input size: {nTokens}", verbose=verbose, level="debug")
                 # 2. Chunk the tokens
                 chunks = self.chunkTokens(tokens)
 
@@ -100,16 +102,22 @@ class Summarizer:
                     summaries.append(summary)
 
                 # 4. Join the summaries
-                result = "".join(summaries)
-                inputSize = len(self.tokenizer.tokenize(result))
+                result = TextUtils.cleanText(text="".join(summaries))
+                resultTokens = self.tokenizer.tokenize(result)
+                nTokens = len(resultTokens)
 
-        result = TextUtils.cleanText(text=result)
+                log(
+                    f"Number of tokens of the result: {len(resultTokens)}",
+                    verbose=verbose,
+                    level="debug",
+                )
 
         log(
             f"Done! Result is {len(result)} characters long",
             verbose=verbose,
             level="success",
         )
+
         return result
 
     def chunkTokens(self, tokens: List[str]) -> List[str]:
