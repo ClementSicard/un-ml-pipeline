@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 import aiohttp
 from requests import get
 
-from unml.utils.consts import IOConsts
+from unml.utils.consts.io import IOConsts
 from unml.utils.io import IOUtils
 from unml.utils.misc import log
 from unml.utils.text import TextUtils

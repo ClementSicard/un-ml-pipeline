@@ -95,11 +95,12 @@ class ArgUtils:
             try:
                 with open(path, "r") as f:
                     for line in f.readlines():
+                        line = line.strip()
                         if isCorrectURL(line):
                             results.append(line)
                         else:
                             log(
-                                f"'{args.get('url')}' is not a valid URL",
+                                f"'{line}' is not a valid URL. Skipping.",
                                 level="warning",
                                 verbose=True,
                             )

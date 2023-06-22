@@ -5,7 +5,7 @@ This module contains miscellaneous functions and classes.
 from loguru import logger
 from transformers.utils import logging as hfLogging
 
-from .consts import LoggerConsts
+from unml.utils.consts.logger import LoggerConsts
 
 hfLogging.set_verbosity(40)
 

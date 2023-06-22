@@ -1,7 +1,7 @@
 import os
-from typing import Optional
+from typing import Any, Dict, Optional
 
-from unml.utils.consts import IOConsts
+from unml.utils.consts.io import IOConsts
 from unml.utils.misc import log
 
 
@@ -11,7 +11,7 @@ class IOUtils:
     """
 
     @staticmethod
-    def saveFile(fileName: str, content: str | bytes) -> Optional[str]:
+    def saveFile(fileName: str, content: str | bytes | Dict[str, Any]) -> Optional[str]:
         """
         Save a the contents of a file to a given path.
 
@@ -51,3 +51,23 @@ class IOUtils:
                 verbose=True,
             )
             exit()
+
+    @staticmethod
+    def saveResults(results: Dict[str, Any]) -> None:
+        """
+        Save the results of a task to a file.
+
+        Parameters
+        ----------
+        `results` : `Dict[str, Any]`
+            The results of the task
+        `verbose` : `bool`
+            The verbose argument. Defaults to `False`.
+        """
+        log("Saving results...", level="info", verbose=True)
+
+        fileName = f"{results['task']}.json"
+        output = IOUtils.saveFile(fileName=fileName, content=results)
+
+        if output is not None:
+            log(f"Results saved to {output}!", level="success", verbose=True)
