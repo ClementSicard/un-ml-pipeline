@@ -16,6 +16,7 @@ validators = "^0.20.0"
 safetensors = "^0.3.1"
 aiohttp = "^3.8.4"
 tqdm = "^4.65.0"
+sentencepiece = "^0.1.99"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.3.0"
