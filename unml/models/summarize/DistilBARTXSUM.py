@@ -2,9 +2,9 @@ from unml.models.model import Model
 from unml.utils.consts.summarize import SummarizationConsts
 
 
-class DistillBARTXSUM(Model):
+class DistilBARTXSUM(Model):
     """
-    Class for DistillBART (Sanh et al., 2019) model, trained on XSUM dataset
+    Class for DistilBART (Sanh et al., 2019) model, trained on XSUM dataset
     to generate very short summaries of news articles.
     """
 

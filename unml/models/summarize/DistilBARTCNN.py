@@ -2,9 +2,9 @@ from unml.models.model import Model
 from unml.utils.consts.summarize import SummarizationConsts
 
 
-class DistillBARTCNN(Model):
+class DistilBARTCNN(Model):
     """
-    Class for DistillBART (Sanh et al., 2019) model
+    Class for DistilBART (Sanh et al., 2019) model
     """
 
     MODEL_NAME = "sshleifer/distilbart-cnn-12-6"
