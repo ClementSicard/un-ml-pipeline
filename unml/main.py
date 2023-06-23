@@ -24,10 +24,16 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
     """
 
     """
+    0. Instantiate summarizer and NER depending on tasks
+    """
+    if args["summarize"]:
+        summarizer = Summarizer(model=args["summarizer"])
+    if args["ner"]:
+        ner = NamedEntityRecognizer()
+
+    """
     1. Get text from files corresponding to URLs
     """
-    summarizer = Summarizer()
-    ner = NamedEntityRecognizer()
 
     texts = NetworkUtils.extractTextFromURLs(urls=urls, verbose=verbose)
     results = []
@@ -53,16 +59,20 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
             """
             2. Summarize text
             """
-            summary = summarizer.summarize(text=text, verbose=verbose)
-            log(f"Summary: {summary}", verbose=verbose)
-            result["summary"] = summary
+            if args["summarize"]:
+                summary = summarizer.summarize(text=text, verbose=verbose)
+                log(f"Summary: {summary}", verbose=verbose)
+                result["summary"] = summary
 
             """
             3. Named Entity Recognition
             """
-            entities, detailed = ner.recognizeFromChunked(text=text, verbose=verbose)
-            result["named_entities"]["list"] = entities
-            result["named_entities"]["detailed"] = detailed
+            if args["ner"]:
+                entities, detailed = ner.recognizeFromChunked(
+                    text=text, verbose=verbose
+                )
+                result["named_entities"]["list"] = entities
+                result["named_entities"]["detailed"] = detailed
 
             results.append(result)
 
