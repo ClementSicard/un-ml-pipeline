@@ -5,6 +5,9 @@ This module contains the general `Summarizer` class, to summarize a text.
 
 from unml.models.summarize.DistilBARTCNN import DistilBARTCNN
 from unml.models.summarize.DistilBARTXSUM import DistilBARTXSUM
+from unml.models.summarize.DistilPegasusCNN import DistilPegasusCNN
+from unml.models.summarize.LED import LED
+from unml.models.summarize.LongT5 import LongT5
 from unml.utils.consts.summarize import SummarizationConsts
 from unml.utils.misc import log
 from unml.utils.text import TextUtils
@@ -15,19 +18,26 @@ class Summarizer:
     This class represents a general object to summarize text.
     """
 
-    summarizer: DistilBARTCNN | DistilBARTXSUM
+    summarizer: DistilBARTCNN | DistilBARTXSUM | DistilPegasusCNN | LED | LongT5
 
     def __init__(
         self,
         model: str = SummarizationConsts.DEFAULT_SUMMARIZATION_MODEL,
     ) -> None:
-        match model:
-            case "DistilBART-cnn":
+        parsedModel = SummarizationConsts.ARGS_MAP[model]
+        match parsedModel:
+            case "DistilBARTCNN":
                 self.summarizer = DistilBARTCNN()
-            case "DistilBART-xsum":
+            case "DistilBARTXSUM":
                 self.summarizer = DistilBARTXSUM()
+            case "DistilPegasusCNN":
+                self.summarizer = DistilPegasusCNN()
+            case "LED":
+                self.summarizer = LED()
+            case "LongT5":
+                self.summarizer = LongT5()
             case _:
-                self.summarizer = DistilBARTXSUM()
+                self.summarizer = LED()
 
         self.maxChunkSize = self.summarizer.model.tokenizer.model_max_length - 10
         self.tokenizer = self.summarizer.model.tokenizer
