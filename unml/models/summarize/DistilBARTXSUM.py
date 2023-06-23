@@ -28,6 +28,11 @@ class DistilBARTXSUM(Model):
             min_length=minLength,
             max_length=maxLength,
             do_sample=doSample,
+            no_repeat_ngram_size=3,
+            encoder_no_repeat_ngram_size=3,
+            repetition_penalty=3.5,
+            num_beams=4,
+            early_stopping=True,
         )
 
         return str(output[0]["summary_text"])

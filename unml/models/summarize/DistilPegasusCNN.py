@@ -2,12 +2,12 @@ from unml.models.model import Model
 from unml.utils.consts.summarize import SummarizationConsts
 
 
-class DistilBARTCNN(Model):
+class DistilPegasusCNN(Model):
     """
-    Class for DistilBART (Sanh et al., 2019) model
+    Class for distilled Pegasus (Liu et al., 2020) model
     """
 
-    MODEL_NAME = "sshleifer/distilbart-cnn-12-6"
+    MODEL_NAME = "sshleifer/distill-pegasus-cnn-16-4"
 
     def __init__(self, modelName: str = MODEL_NAME) -> None:
         super().__init__(modelName=modelName, task="summarization")
