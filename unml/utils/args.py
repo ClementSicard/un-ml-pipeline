@@ -5,6 +5,7 @@ This module contains helpers to parse command line arguments.
 from argparse import ArgumentParser
 from typing import Any, Dict, List
 
+from unml.utils.consts.summarize import SummarizationConsts
 from unml.utils.misc import isCorrectURL, log
 
 
@@ -31,6 +32,7 @@ class ArgUtils:
             "-o",
             "--output",
             type=str,
+            help="Output file path",
             required=False,
             default="output.json",
         )
@@ -39,11 +41,34 @@ class ArgUtils:
             "-v",
             "--verbose",
             action="store_true",
+            help="Verbose mode",
             default=False,
+        )
+
+        parser.add_argument(
+            "--summarize",
+            action="store_true",
+            default=False,
+            help="Summarize the text if set",
+        )
+        parser.add_argument(
+            "--ner",
+            action="store_true",
+            default=False,
+            help="Perform NER on the text if set",
+        )
+
+        parser.add_argument(
+            "--summarizer",
+            type=str,
+            default="LED",
+            choices=SummarizationConsts.ARGS_MAP.keys(),
+            help="Model to use for summarization",
         )
 
         parsedArgs = vars(parser.parse_args())
 
+        # Error: no URL or file specified
         if not parsedArgs.get("url") and not parsedArgs.get("file"):
             log(
                 "You need to specify either a URL or a file. Please try again",
@@ -52,6 +77,7 @@ class ArgUtils:
             )
             exit(1)
 
+        # Warning: both URL and file specified. Only file will be used
         if parsedArgs.get("url") and parsedArgs.get("file"):
             log(
                 "You specified both a URL and a file. The URL will be discarded",
@@ -59,6 +85,24 @@ class ArgUtils:
                 verbose=True,
             )
             del parsedArgs["url"]
+
+        # Error: In case none of ner or summarize is specified
+        if not parsedArgs.get("ner") and not parsedArgs.get("summarize"):
+            log(
+                "You need to specify either --ner or --summarize. Please try again",
+                level="error",
+                verbose=True,
+            )
+            exit(1)
+
+        # Error: If summarizer is specified but summarize is not
+        if parsedArgs.get("summarizer") and not parsedArgs.get("summarize"):
+            log(
+                "You specified a summarizer but not --summarize. Please try again",
+                level="error",
+                verbose=True,
+            )
+            exit(1)
 
         log(f"Arguments: {parsedArgs}", verbose=True)
 
