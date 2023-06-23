@@ -42,8 +42,12 @@ class Summarizer:
         self.maxChunkSize = self.summarizer.model.tokenizer.model_max_length - 10
         self.tokenizer = self.summarizer.model.tokenizer
 
-        log(f"{self.summarizer.__class__} instantiated!", verbose=True, level="success")
-        log(f"Max chunk size: {self.maxChunkSize}", verbose=True, level="info")
+        log(
+            f"Summarizer {parsedModel} instantiated!",
+            verbose=True,
+            level="success",
+        )
+        log(f"\tMax chunk size: {self.maxChunkSize}", verbose=True, level="info")
 
     def summarize(
         self,

@@ -1,3 +1,4 @@
+import sys
 from typing import List
 
 from tqdm import tqdm
@@ -39,6 +40,8 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
     results = []
 
     for textJson in tqdm(texts) if not verbose else texts:
+        print("=" * 100 + "\n", file=sys.stderr)
+        log(f"Started working on {textJson['url']}", verbose=verbose, level="warning")
         text = textJson["text"]
         result = {
             "url": textJson["url"],
