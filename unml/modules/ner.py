@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Tuple
 
 from unml.models.ner.FLERT import FLERT
 from unml.models.ner.RoBERTa import RoBERTa
+from unml.models.ner.spaCy import spaCyNER
 from unml.utils.consts.ner import NERConsts
 from unml.utils.misc import log
 from unml.utils.text import TextUtils
@@ -12,7 +13,7 @@ class NamedEntityRecognizer:
     This class represents a general object to recognize named entities in text.
     """
 
-    nerExtractor: RoBERTa | FLERT
+    nerExtractor: RoBERTa | FLERT | spaCyNER
 
     def __init__(
         self,
@@ -24,6 +25,8 @@ class NamedEntityRecognizer:
                 self.nerExtractor = RoBERTa()
             case "FLERT":
                 self.nerExtractor = FLERT()
+            case "spaCyNER":
+                self.nerExtractor = spaCyNER()
             case _:
                 self.nerExtractor = FLERT()
 
