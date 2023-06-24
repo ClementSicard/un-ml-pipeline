@@ -30,7 +30,7 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
     if args["summarize"]:
         summarizer = Summarizer(model=args["summarizer"])
     if args["ner"]:
-        ner = NamedEntityRecognizer()
+        ner = NamedEntityRecognizer(model=args["recognizer"])
 
     """
     1. Get text from files corresponding to URLs
@@ -63,20 +63,22 @@ def runPipielines(urls: List[str], verbose: bool = False) -> None:
             2. Summarize text
             """
             if args["summarize"]:
-                summary = summarizer.summarize(text=text, verbose=verbose)
-                log(f"Summary: {summary}", verbose=verbose)
-                result["summary"] = summary
+                result["summary"] = summarizer.summarize(text=text, verbose=verbose)
 
             """
             3. Named Entity Recognition
             """
             if args["ner"]:
-                entities, detailed = ner.recognizeFromChunked(
-                    text=text, verbose=verbose
+                entities, detailed = ner.recognize(
+                    text=text,
+                    verbose=verbose,
                 )
                 result["named_entities"]["list"] = entities
                 result["named_entities"]["detailed"] = detailed
 
+            """
+            4. Save results
+            """
             results.append(result)
 
         else:

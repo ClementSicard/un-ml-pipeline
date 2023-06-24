@@ -5,6 +5,7 @@ This module contains helpers to parse command line arguments.
 from argparse import ArgumentParser
 from typing import Any, Dict, List
 
+from unml.utils.consts.ner import NERConsts
 from unml.utils.consts.summarize import SummarizationConsts
 from unml.utils.misc import isCorrectURL, log
 
@@ -61,12 +62,25 @@ class ArgUtils:
         parser.add_argument(
             "--summarizer",
             type=str,
-            default="LED",
+            default="led",
             choices=SummarizationConsts.ARGS_MAP.keys(),
             help="Model to use for summarization",
         )
+        parser.add_argument(
+            "--recognizer",
+            type=str,
+            default="flert",
+            choices=NERConsts.ARGS_MAP.keys(),
+            help="Model to use for NER",
+        )
 
         parsedArgs = vars(parser.parse_args())
+
+        if not parsedArgs.get("summarize"):
+            parsedArgs["summarizer"] = None
+
+        if not parsedArgs.get("ner"):
+            parsedArgs["recognizer"] = None
 
         # Error: no URL or file specified
         if not parsedArgs.get("url") and not parsedArgs.get("file"):
@@ -90,15 +104,6 @@ class ArgUtils:
         if not parsedArgs.get("ner") and not parsedArgs.get("summarize"):
             log(
                 "You need to specify either --ner or --summarize. Please try again",
-                level="error",
-                verbose=True,
-            )
-            exit(1)
-
-        # Error: If summarizer is specified but summarize is not
-        if parsedArgs.get("summarizer") and not parsedArgs.get("summarize"):
-            log(
-                "You specified a summarizer but not --summarize. Please try again",
                 level="error",
                 verbose=True,
             )

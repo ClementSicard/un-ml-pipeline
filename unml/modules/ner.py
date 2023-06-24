@@ -1,7 +1,6 @@
 from typing import Any, Dict, List, Tuple
 
-from tqdm import tqdm
-
+from unml.models.ner.FLERT import FLERT
 from unml.models.ner.RoBERTa import RoBERTa
 from unml.utils.consts.ner import NERConsts
 from unml.utils.misc import log
@@ -13,17 +12,28 @@ class NamedEntityRecognizer:
     This class represents a general object to recognize named entities in text.
     """
 
+    nerExtractor: RoBERTa | FLERT
+
     def __init__(
         self,
         model: str = NERConsts.DEFAULT_NER_MODEL,
     ) -> None:
-        match model:
+        parsedModel = NERConsts.ARGS_MAP[model]
+        match parsedModel:
             case "RoBERTa":
                 self.nerExtractor = RoBERTa()
+            case "FLERT":
+                self.nerExtractor = FLERT()
             case _:
-                self.nerExtractor = RoBERTa()
+                self.nerExtractor = FLERT()
 
-    def recognizeFromChunked(
+        log(
+            f"NamedEntityRecognizer {parsedModel} instantiated!",
+            verbose=True,
+            level="success",
+        )
+
+    def recognize(
         self,
         text: str,
         verbose: bool = False,
@@ -46,22 +56,7 @@ class NamedEntityRecognizer:
             the entity and its frequency, and the detailed entities output
             ```
         """
-        tokenizer = self.nerExtractor.model.tokenizer
-
-        tokens = tokenizer.tokenize(text)
-
-        chunkedTokens = TextUtils.chunkTokens(
-            tokens=tokens,
-            tokenizer=tokenizer,
-        )
-        results = []
-        for chunk in tqdm(chunkedTokens):
-            chunkResults = self.nerExtractor.recognize(chunk)
-            results.extend(chunkResults)
-
-        for result in results:
-            result["score"] = float(f'{result["score"]:.3f}')
-            result["word"] = result["word"].strip()
+        results = self.nerExtractor.recognize(text=text)
 
         cleanedEntities = self.cleanDetailedEntities(
             detailedEntities=results,
