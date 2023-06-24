@@ -1,4 +1,5 @@
 SUMMARIZER := "led"
+RECOGNIZER := "flert"
 
 both:
 	poetry run python unml/main.py \
@@ -7,6 +8,7 @@ both:
 		--summarize \
 		--ner \
 		--summarizer ${SUMMARIZER}
+		--recognizer ${RECOGNIZER}
 
 summarize:
 	poetry run python unml/main.py \
@@ -20,4 +22,5 @@ ner:
 	poetry run python unml/main.py \
 		-f urls.txt \
 		-v \
-		--ner
+		--ner \
+		--recognizer ${RECOGNIZER}
