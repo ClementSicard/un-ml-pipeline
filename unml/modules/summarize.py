@@ -39,15 +39,14 @@ class Summarizer:
             case _:
                 self.summarizer = LED()
 
-        self.maxChunkSize = self.summarizer.model.tokenizer.model_max_length - 10
         self.tokenizer = self.summarizer.model.tokenizer
+        self.maxChunkSize = self.tokenizer.model_max_length - 10
 
         log(
-            f"Summarizer {parsedModel} instantiated!",
+            f"Summarizer {parsedModel} instantiated! Max chunk size: {self.maxChunkSize}",
             verbose=True,
             level="success",
         )
-        log(f"\tMax chunk size: {self.maxChunkSize}", verbose=True, level="info")
 
     def summarize(
         self,
@@ -134,6 +133,7 @@ class Summarizer:
                     level="debug",
                 )
 
+        log(f"Summary: {summary}", verbose=verbose)
         log(
             f"Done! Result is {len(result)} characters long",
             verbose=verbose,
