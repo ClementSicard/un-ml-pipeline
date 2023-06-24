@@ -6,7 +6,7 @@ class SummarizationConsts:
     MODELS = {"DistilBARTXSUM", "DistilBARTCNN", "DistilPegasusCNN", "LED", "LongT5"}
     SUMMARY_MIN_LENGTH = 30
     SUMMARY_MAX_TOKEN_LENGTH = 180
-    DEFAULT_SUMMARIZATION_MODEL = "LED"
+    DEFAULT_SUMMARIZATION_MODEL = "led"
 
     ARGS_MAP = {
         "pegasus": "DistilPegasusCNN",
