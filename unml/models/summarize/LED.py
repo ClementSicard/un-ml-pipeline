@@ -4,7 +4,8 @@ from unml.utils.consts.summarize import SummarizationConsts
 
 class LED(Model):
     """
-    Class for LED (Guo et al., 2021) model: https://arxiv.org/pdf/2112.07916
+    Class for LED (Beltagy et al., 2020) model
+    https://arxiv.org/pdf/2004.05150
     """
 
     MODEL_NAME = "pszemraj/led-base-book-summary"
