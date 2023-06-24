@@ -89,6 +89,9 @@ class TextUtils:
         # Harmonize spacing
         text = re.sub(r"\s+", " ", text)
 
+        # Remove sequences of long dots
+        text = re.sub(r"\.{4,}", " ", text)
+
         # Remove spaces before punctuation
         text = text.replace(" .", ".")
 
