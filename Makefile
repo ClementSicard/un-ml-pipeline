@@ -1,5 +1,5 @@
 SUMMARIZER := "led"
-RECOGNIZER := "flert"
+RECOGNIZER := "spacy"
 
 both:
 	poetry run python unml/main.py \
