@@ -62,14 +62,14 @@ class ArgUtils:
         parser.add_argument(
             "--summarizer",
             type=str,
-            default="led",
+            default=SummarizationConsts.DEFAULT_SUMMARIZATION_MODEL,
             choices=SummarizationConsts.ARGS_MAP.keys(),
             help="Model to use for summarization",
         )
         parser.add_argument(
             "--recognizer",
             type=str,
-            default="flert",
+            default=NERConsts.DEFAULT_NER_MODEL,
             choices=NERConsts.ARGS_MAP.keys(),
             help="Model to use for NER",
         )
