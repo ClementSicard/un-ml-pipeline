@@ -6,6 +6,7 @@ class DistilBARTXSUM(Model):
     """
     Class for DistilBART (Sanh et al., 2019) model, trained on XSUM dataset
     to generate very short summaries of news articles.
+    https://arxiv.org/abs/2010.13002
     """
 
     MODEL_NAME = "sshleifer/distilbart-xsum-12-1"
