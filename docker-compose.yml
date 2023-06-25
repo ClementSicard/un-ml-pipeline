@@ -1,0 +1,10 @@
+version: "3"
+services:
+  unml-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - .:/unml-api
