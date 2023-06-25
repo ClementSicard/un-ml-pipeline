@@ -5,9 +5,10 @@ This module contains helpers to parse command line arguments.
 from argparse import ArgumentParser
 from typing import Any, Dict, List
 
+from unml.utils.api import APIUtils
 from unml.utils.consts.ner import NERConsts
 from unml.utils.consts.summarize import SummarizationConsts
-from unml.utils.misc import isCorrectURL, log
+from unml.utils.misc import log
 
 
 class ArgUtils:
@@ -114,7 +115,7 @@ class ArgUtils:
         return parsedArgs
 
     @staticmethod
-    def getURLsFromArgs(args: Dict[str, Any]) -> List[str]:
+    def getURLsAndIDsFromArgs(args: Dict[str, Any]) -> List[str]:
         """
         Extract a singleton (URL case) or list of paths/urls (file case) depending
         on the CLI arguments.
@@ -135,7 +136,7 @@ class ArgUtils:
         if args.get("url"):
             url: str = args["url"]
 
-            if isCorrectURL(url=url):
+            if APIUtils.isCorrectURL(url=url):
                 results.append(url)
             else:
                 log(
@@ -156,7 +157,7 @@ class ArgUtils:
                         if line.startswith("#"):
                             continue
 
-                        if isCorrectURL(line):
+                        if APIUtils.isCorrectURL(line):
                             results.append(line)
                         else:
                             log(
