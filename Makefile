@@ -24,3 +24,6 @@ ner:
 		-v \
 		--ner \
 		--recognizer ${RECOGNIZER}
+
+api:
+	poetry run uvicorn unml.api:app --reload
