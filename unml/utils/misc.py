@@ -88,22 +88,3 @@ def log(
             logFunc = bindedLogger.debug
 
     logFunc(message)
-
-
-def isCorrectURL(url: str) -> bool:
-    """
-    Checks if the given URL is valid.
-
-    Parameters
-    ----------
-    `url` : `str`
-        The URL to be checked
-
-    Returns
-    -------
-    `bool`
-        `True` if the URL is valid, `False` otherwise
-    """
-    import validators
-
-    return bool(validators.url(url))
