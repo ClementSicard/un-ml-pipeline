@@ -16,7 +16,7 @@ app = FastAPI(
 )
 
 
-@app.get("/")
+@app.get("/")  # type: ignore
 def readRoot() -> JSON:
     """
     Root endpoint.
@@ -29,7 +29,7 @@ def readRoot() -> JSON:
     return {"Hello": "World"}
 
 
-@app.post("/run")
+@app.post("/run")  # type: ignore
 def run(queryDocs: List[QueryDocument]) -> List[JSON]:
     """
     Post a list of documents to run the pipeline on.
