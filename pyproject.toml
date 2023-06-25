@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "un-ml-pipeline"
-version = "0.1.0"
+version = "1.0.0"
 description = "Machine Learning pipeline for United Nations Digital Library"
 authors = ["Clément Sicard <clement.sicard@icloud.com>"]
 readme = "README.md"
