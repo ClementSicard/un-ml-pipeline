@@ -10,6 +10,7 @@ from unml.utils.consts.io import IOConsts
 from unml.utils.io import IOUtils
 from unml.utils.misc import log
 from unml.utils.text import TextUtils
+from unml.utils.types.document import Document
 
 
 class NetworkUtils:
@@ -55,8 +56,8 @@ class NetworkUtils:
         return output
 
     @staticmethod
-    def extractTextFromURLs(
-        urls: List[str],
+    def extractTextFromDocuments(
+        docs: List[Document],
         headers: Optional[Dict[str, Any]] = None,
         verbose: bool = False,
     ) -> List[Dict[str, str]]:
@@ -66,8 +67,8 @@ class NetworkUtils:
 
         Parameters
         ----------
-        `urls` : `List[str]`
-            The list of URLs
+        `docs` : `List[Document]`
+            The list of documents
         `headers` : `Optional[Dict[str, Any]]`, optional
             The headers to pass to the HTTP request, by default `None`
         `verbose` : `bool`, optional
@@ -83,7 +84,7 @@ class NetworkUtils:
         start = time.time()
         results = asyncio.run(
             NetworkUtils.getExtractedTextFromMultipleURLs(
-                urls=urls,
+                urls=[doc.url for doc in docs],
                 headers=headers,
                 verbose=verbose,
             )
@@ -93,7 +94,7 @@ class NetworkUtils:
 
         if verbose:
             log(
-                f"Took {end-start:.2f} seconds to download {len(urls)} urls!",
+                f"Took {end-start:.2f} seconds to download {len(docs)} urls!",
                 level="success",
                 verbose=verbose,
             )
