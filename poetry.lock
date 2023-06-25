@@ -5059,7 +5059,7 @@ requests = "^2.28.2"
 
 [package.source]
 type = "git"
-url = "git@github.com:ClementSicard/un-digital-library-api.git"
+url = "https://github.com/ClementSicard/un-digital-library-api.git"
 reference = "v1.0.0c"
 resolved_reference = "5b7d18ff3bf29d1da7ccd5b4e488b168281ab21b"
 
@@ -5545,4 +5545,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "b3ac7faebae2ff1367f122cd9d067ecdebcb3f8eb815869d0a160a95e13c779d"
+content-hash = "e5aaf51cdc87f75106f763c9915576dd506ecf0c9264b11c36669504769c9180"
