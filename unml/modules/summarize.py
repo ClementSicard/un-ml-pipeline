@@ -133,9 +133,9 @@ class Summarizer:
                     level="debug",
                 )
 
-        log(f"Summary: {summary}", verbose=verbose)
+        log(f"Summary: {result}", verbose=verbose)
         log(
-            f"Done! Result is {len(result)} characters long",
+            f"Done! Summary is {len(result)} characters long",
             verbose=verbose,
             level="success",
         )
