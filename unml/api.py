@@ -60,7 +60,7 @@ def run(queryDocs: List[QueryDocument]) -> List[JSON]:
                 log(f"Error: {e}", level="error", verbose=True)
                 # Error: no URL or file specified
                 raise HTTPException(
-                    status_code=404, detail=f"No URL found for id {doc.recordId}"
+                    status_code=404, detail=f"No URL found for id '{doc.recordId}'"
                 )
             except Exception as e:
                 log(f"Error: {e}", level="error", verbose=True)
