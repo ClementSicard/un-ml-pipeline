@@ -14,13 +14,13 @@
 
 ## Summarization models
 
-|      Model       |                              File                               |                        Paper                         |     Authors     | Year |                              HuggingFace 🤗 model                               |
-| :--------------: | :-------------------------------------------------------------: | :--------------------------------------------------: | :-------------: | :--: | :-----------------------------------------------------------------------------: |
-| DistillBART-CNN  |  [`DistillBARTCNN.py`](unml/models/summarize/DistilBARTCNN.py)  | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |          [Link](https://huggingface.co/sshleifer/distilbart-cnn-12-6)           |
-| DistillBART-XSUM | [`DistillBARTXSUM.py`](unml/models/summarize/DistilBARTXSUM.py) | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |          [Link](https://huggingface.co/sshleifer/distilbart-xsum-12-1)          |
-| DistilPegasusCNN | [`DistilPegasusCNN.py`](unml/models/summarize/DistilPegasusCNN) | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |        [Link](https://huggingface.co/sshleifer/distill-pegasus-cnn-16-4)        |
-|    Longformer    |            [`LED.py`](unml/models/summarize/LED.py)             |   [`arXiv` link](https://arxiv.org/pdf/2004.05150)   | Beltagy et al.  | 2020 |          [Link](https://huggingface.co/pszemraj/led-base-book-summary)          |
-|      LongT5      |         [`LongT5.py`](unml/models/summarize/LongT5.py)          |   [`arXiv` link](https://arxiv.org/pdf/2112.07916)   |   Guo et al.    | 2022 | [Link](https://huggingface.co/pszemraj/long-t5-tglobal-base-16384-book-summary) |
+|      Model       |                                File                                |                        Paper                         |     Authors     | Year |                              HuggingFace 🤗 model                               |
+| :--------------: | :----------------------------------------------------------------: | :--------------------------------------------------: | :-------------: | :--: | :-----------------------------------------------------------------------------: |
+| DistillBART-CNN  |   [`DistillBARTCNN.py`](unml/models/summarize/DistilBARTCNN.py)    | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |          [Link](https://huggingface.co/sshleifer/distilbart-cnn-12-6)           |
+| DistillBART-XSUM |  [`DistillBARTXSUM.py`](unml/models/summarize/DistilBARTXSUM.py)   | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |          [Link](https://huggingface.co/sshleifer/distilbart-xsum-12-1)          |
+| DistilPegasusCNN | [`DistilPegasusCNN.py`](unml/models/summarize/DistilPegasusCNN.py) | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |        [Link](https://huggingface.co/sshleifer/distill-pegasus-cnn-16-4)        |
+|    Longformer    |              [`LED.py`](unml/models/summarize/LED.py)              |   [`arXiv` link](https://arxiv.org/pdf/2004.05150)   | Beltagy et al.  | 2020 |          [Link](https://huggingface.co/pszemraj/led-base-book-summary)          |
+|      LongT5      |           [`LongT5.py`](unml/models/summarize/LongT5.py)           |   [`arXiv` link](https://arxiv.org/pdf/2112.07916)   |   Guo et al.    | 2022 | [Link](https://huggingface.co/pszemraj/long-t5-tglobal-base-16384-book-summary) |
 
 ## NER models
 
