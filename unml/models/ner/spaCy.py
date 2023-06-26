@@ -10,7 +10,7 @@ class spaCyNER(Model):
     Class for `spaCy` NER model
     """
 
-    MODEL_NAME = "en_core_web_sm"
+    MODEL_NAME = "en_core_web_trf"
 
     def __init__(self, modelName: str = MODEL_NAME) -> None:
         self.model = spacy.load(modelName)

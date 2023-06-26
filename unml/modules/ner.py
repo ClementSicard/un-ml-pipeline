@@ -31,7 +31,7 @@ class NamedEntityRecognizer:
                 self.nerExtractor = FLERT()
 
         log(
-            f"NamedEntityRecognizer {parsedModel} instantiated!",
+            f"NamedEntityRecognizer {parsedModel} instantiated with model {self.nerExtractor.MODEL_NAME}!",
             verbose=True,
             level="success",
         )

@@ -17,6 +17,7 @@ class FLERT(Model):
 
     def __init__(self, modelName: str = MODEL_NAME_SMALL) -> None:
         self.model = SequenceTagger.load(modelName)
+        self.MODEL_NAME = modelName
 
     def recognize(self, text: str) -> List[Dict[str, Any]]:
         """
