@@ -7,8 +7,6 @@
   - [Summarization models](#summarization-models)
   - [NER models](#ner-models)
   - [Usage](#usage)
-  - [Useful links](#useful-links)
-    - [Summarizing](#summarizing)
 
 ## Pipeline description
 
@@ -16,24 +14,22 @@
 
 ## Summarization models
 
-|      Model       |                              File                               |                        Paper                         |     Authors     | Year | HuggingFace 🤗 model |
-| :--------------: | :-------------------------------------------------------------: | :--------------------------------------------------: | :-------------: | :--: | :------------------: |
-| DistillBART-CNN  |  [`DistillBARTCNN.py`](unml/models/summarize/DistilBARTCNN.py)  | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |       **TODO**       |
-| DistillBART-XSUM | [`DistillBARTXSUM.py`](unml/models/summarize/DistilBARTXSUM.py) | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |       **TODO**       |
-| DistilPegasusCNN | [`DistilPegasusCNN.py`](unml/models/summarize/DistilPegasusCNN) | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |       **TODO**       |
-|    Longformer    |            [`LED.py`](unml/models/summarize/LED.py)             |   [`arXiv` link](https://arxiv.org/pdf/2004.05150)   | Beltagy et al.  | 2020 |       **TODO**       |
-|      LongT5      |         [`LongT5.py`](unml/models/summarize/LongT5.py)          |   [`arXiv` link](https://arxiv.org/pdf/2112.07916)   |   Guo et al.    | 2022 |       **TODO**       |
+|      Model       |                              File                               |                        Paper                         |     Authors     | Year |                              HuggingFace 🤗 model                               |
+| :--------------: | :-------------------------------------------------------------: | :--------------------------------------------------: | :-------------: | :--: | :-----------------------------------------------------------------------------: |
+| DistillBART-CNN  |  [`DistillBARTCNN.py`](unml/models/summarize/DistilBARTCNN.py)  | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |          [Link](https://huggingface.co/sshleifer/distilbart-cnn-12-6)           |
+| DistillBART-XSUM | [`DistillBARTXSUM.py`](unml/models/summarize/DistilBARTXSUM.py) | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |          [Link](https://huggingface.co/sshleifer/distilbart-xsum-12-1)          |
+| DistilPegasusCNN | [`DistilPegasusCNN.py`](unml/models/summarize/DistilPegasusCNN) | [`arXiv` link](https://arxiv.org/pdf/2010.13002.pdf) | Shleifer et al. | 2020 |        [Link](https://huggingface.co/sshleifer/distill-pegasus-cnn-16-4)        |
+|    Longformer    |            [`LED.py`](unml/models/summarize/LED.py)             |   [`arXiv` link](https://arxiv.org/pdf/2004.05150)   | Beltagy et al.  | 2020 |          [Link](https://huggingface.co/pszemraj/led-base-book-summary)          |
+|      LongT5      |         [`LongT5.py`](unml/models/summarize/LongT5.py)          |   [`arXiv` link](https://arxiv.org/pdf/2112.07916)   |   Guo et al.    | 2022 | [Link](https://huggingface.co/pszemraj/long-t5-tglobal-base-16384-book-summary) |
 
 ## NER models
 
-|  Model   |                    File                    |                        Paper                         |   Authors    | Year | HuggingFace 🤗 model |
-| :------: | :----------------------------------------: | :--------------------------------------------------: | :----------: | :--: | :------------------: |
-| RoBERTa  | [`RoBERTa.py`](unml/models/ner/RoBERTa.py) | [`arXiv` link](https://arxiv.org/pdf/1907.11692.pdf) |  Liu et al.  | 2019 |       **TODO**       |
-|  FLERT   |   [`FLERT.py`](unml/models/ner/FLERT.py)   | [`arXiv` link](https://arxiv.org/pdf/2011.06993.pdf) | Akbik et al. | 2020 |       **TODO**       |
-| spaCyNER |   [`spaCy.py`](unml/models/ner/spaCy.py)   |                          -                           |    spaCy     | 2023 |       **TODO**       |
+|  Model   |                    File                    |                        Paper                         |   Authors    | Year |                 HuggingFace 🤗 model                  |
+| :------: | :----------------------------------------: | :--------------------------------------------------: | :----------: | :--: | :---------------------------------------------------: |
+| RoBERTa  | [`RoBERTa.py`](unml/models/ner/RoBERTa.py) | [`arXiv` link](https://arxiv.org/pdf/1907.11692.pdf) |  Liu et al.  | 2019 |    [Link](Jean-Baptiste/roberta-large-ner-english)    |
+|  FLERT   |   [`FLERT.py`](unml/models/ner/FLERT.py)   | [`arXiv` link](https://arxiv.org/pdf/2011.06993.pdf) | Akbik et al. | 2020 | [Link](https://huggingface.co/flair/ner-english-fast) |
+| spaCyNER |   [`spaCy.py`](unml/models/ner/spaCy.py)   |                          -                           |    spaCy     | 2023 |            [Link](https://huggingface.co/)            |
 
 ## Usage
 
-## Useful links
-
-### Summarizing
+**TODO**
