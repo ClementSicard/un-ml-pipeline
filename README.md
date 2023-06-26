@@ -10,7 +10,7 @@
 
 ## Pipeline description
 
-**TODO**: Add pipeline diagram
+![Diagram](res/ml-pipeline.svg)
 
 ## Summarization models
 
