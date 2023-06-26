@@ -24,11 +24,11 @@
 
 ## NER models
 
-|  Model   |                    File                    |                        Paper                         |   Authors    | Year |                 HuggingFace 🤗 model                  |
-| :------: | :----------------------------------------: | :--------------------------------------------------: | :----------: | :--: | :---------------------------------------------------: |
-| RoBERTa  | [`RoBERTa.py`](unml/models/ner/RoBERTa.py) | [`arXiv` link](https://arxiv.org/pdf/1907.11692.pdf) |  Liu et al.  | 2019 |    [Link](Jean-Baptiste/roberta-large-ner-english)    |
-|  FLERT   |   [`FLERT.py`](unml/models/ner/FLERT.py)   | [`arXiv` link](https://arxiv.org/pdf/2011.06993.pdf) | Akbik et al. | 2020 | [Link](https://huggingface.co/flair/ner-english-fast) |
-| spaCyNER |   [`spaCy.py`](unml/models/ner/spaCy.py)   |                          -                           |    spaCy     | 2023 |            [Link](https://huggingface.co/)            |
+|  Model   |                    File                    |                        Paper                         |   Authors    | Year |                          HuggingFace 🤗 model                           |
+| :------: | :----------------------------------------: | :--------------------------------------------------: | :----------: | :--: | :---------------------------------------------------------------------: |
+| RoBERTa  | [`RoBERTa.py`](unml/models/ner/RoBERTa.py) | [`arXiv` link](https://arxiv.org/pdf/1907.11692.pdf) |  Liu et al.  | 2019 |             [Link](Jean-Baptiste/roberta-large-ner-english)             |
+|  FLERT   |   [`FLERT.py`](unml/models/ner/FLERT.py)   | [`arXiv` link](https://arxiv.org/pdf/2011.06993.pdf) | Akbik et al. | 2020 |          [Link](https://huggingface.co/flair/ner-english-fast)          |
+| spaCyNER |   [`spaCy.py`](unml/models/ner/spaCy.py)   |                          -                           |    spaCy     | 2023 | [Link (on `spaCy` website)](https://spacy.io/models/en#en_core_web_trf) |
 
 ## Usage
 
