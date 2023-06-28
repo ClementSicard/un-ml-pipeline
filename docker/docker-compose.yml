@@ -3,7 +3,7 @@ services:
   unml-api:
     build:
       context: .
-      dockerfile: docker/ml-pipeline.dockerfile
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     volumes:
