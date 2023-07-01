@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class RecordId(BaseModel):  # type: ignore
+class Record(BaseModel):  # type: ignore
     """
     This class models a record, by unique id `recordId`.
 
