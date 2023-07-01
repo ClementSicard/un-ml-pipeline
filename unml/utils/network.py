@@ -156,8 +156,6 @@ class NetworkUtils:
 
             return {"url": url, "text": None}
 
-            return None
-
     @staticmethod
     async def getExtractedTextFromMultipleURLs(
         urls: List[str],
