@@ -3,6 +3,7 @@ from typing import Any, Dict, List
 
 from tqdm import tqdm
 
+from unml.graphdb.graphdb import GraphDB
 from unml.modules.ner import NamedEntityRecognizer
 from unml.modules.summarize import Summarizer
 from unml.utils.api import APIUtils
@@ -14,7 +15,10 @@ from unml.utils.types.document import Document
 from unml.utils.types.json import JSON
 
 
-def runPipelines(docs: List[Document], args: Dict[str, Any]) -> List[JSON]:
+def runPipelines(
+    docs: List[Document],
+    args: Dict[str, Any],
+) -> List[JSON]:
     """
     Main function to run subpipelines: get text from a batch of URLs, then summarize
     text, extract Named Entities...
@@ -33,8 +37,11 @@ def runPipelines(docs: List[Document], args: Dict[str, Any]) -> List[JSON]:
     """
     verbose = args["verbose"]
     """
-    0. Instantiate summarizer and NER depending on tasks
+    0. Instantiate summarizer and NER depending on tasks as well as GraphDB connector
     """
+    graphDB = GraphDB()
+    graphDB.checkConnection()
+
     if args["summarize"]:
         summarizer = Summarizer(model=args["summarizer"])
     if args["ner"]:
@@ -47,11 +54,17 @@ def runPipelines(docs: List[Document], args: Dict[str, Any]) -> List[JSON]:
     texts = NetworkUtils.extractTextFromDocuments(docs=docs, verbose=verbose)
     results: List[JSON] = []
 
-    for textJson in tqdm(texts) if not verbose else texts:
+    assert len(texts) == len(
+        docs
+    ), f"Length of texts and docs is not equal! {len(texts)} texts != {len(docs)} docs"
+
+    for textJson, doc in tqdm(zip(texts, docs)) if not verbose else zip(texts, docs):
         print("=" * 100 + "\n", file=sys.stderr)
         log(f"Started working on {textJson['url']}", verbose=verbose, level="warning")
-        text = textJson["text"]
-        result = {
+        extractedText = textJson["text"]
+
+        # Initialize result JSON
+        result: JSON = {
             "url": textJson["url"],
             "summary": None,
             "named_entities": {
@@ -60,10 +73,10 @@ def runPipelines(docs: List[Document], args: Dict[str, Any]) -> List[JSON]:
             },
         }
 
-        if text is not None:
-            log(f"Document size: {len(text)} characters", verbose=verbose)
+        if extractedText is not None:
+            log(f"Document size: {len(extractedText)} characters", verbose=verbose)
             log(
-                f"Text: {text[:1000] + '...' if len(text) > 1000 else text}",
+                f"Text: {extractedText}",
                 verbose=verbose,
             )
 
@@ -71,23 +84,33 @@ def runPipelines(docs: List[Document], args: Dict[str, Any]) -> List[JSON]:
             2. Summarize text
             """
             if args["summarize"]:
-                result["summary"] = summarizer.summarize(text=text, verbose=verbose)
+                result["summary"] = summarizer.summarize(
+                    text=extractedText, verbose=verbose
+                )
+                doc.summary = result["summary"]
 
             """
             3. Named Entity Recognition
             """
             if args["ner"]:
                 entities, detailed = ner.recognize(
-                    text=text,
+                    text=extractedText,
                     verbose=verbose,
                 )
                 result["named_entities"]["list"] = entities
                 result["named_entities"]["detailed"] = detailed
 
+                # TODO: NERs with Neo4j
+
             """
-            4. Save results
+            4. Save results to result array
             """
             results.append(result)
+
+            """
+            5. Save results to GraphDB
+            """
+            graphDB.createDocument(doc=doc, verbose=verbose)
 
         else:
             log(
@@ -100,7 +123,7 @@ def runPipelines(docs: List[Document], args: Dict[str, Any]) -> List[JSON]:
     if args.get("output"):
         IOUtils.saveResults(results=results, path=args["output"])
 
-    log("Done!", level="success", verbose=verbose)
+    log("Done!", level="success", verbose=True)
 
     return results
 
