@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import fitz
 from transformers import PreTrainedTokenizer
@@ -230,3 +230,29 @@ class TextUtils:
         initials = "".join([w[0] for w in entity.split() if w[0].isupper()])
 
         return initials
+
+    @staticmethod
+    def replaceIfNotNull(
+        string: Optional[str], pattern: str, replacement: str
+    ) -> Optional[str]:
+        """
+        Replace a pattern in a string if the string is not None.
+
+        Parameters
+        ----------
+        `string` : `Optional[str]`
+            The string to be checked
+        `pattern` : `str`
+            The pattern to be replaced
+        `replacement` : `str`
+            The pattern to replace by
+
+        Returns
+        -------
+        `str`
+            The string with the pattern replaced or `None` if the string is `None`
+        """
+        if string is not None:
+            string = string.replace(pattern, replacement)
+
+        return string
