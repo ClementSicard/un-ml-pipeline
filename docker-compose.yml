@@ -10,6 +10,7 @@ services:
       - .:/unml-api
     depends_on:
       - neo4j
+    restart: on-failure
 
   neo4j:
     image: neo4j:latest
@@ -17,6 +18,6 @@ services:
       - "7474:7474"
       - "7687:7687"
     volumes:
-      - ./data:/data
+      - ~/.unml/data:/data:rw
     environment:
       - NEO4J_AUTH=none
