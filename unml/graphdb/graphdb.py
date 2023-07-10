@@ -100,8 +100,43 @@ class GraphDB:
         `verbose` : `bool`, optional
             Verbose of the output, by default `False`
         """
-        log("Not implemented yet", verbose=verbose, level="error")
-        pass
+
+        if doc.subjects is not None:
+            for subject in doc.subjects:
+                self.createLinkToEntity(doc=doc, entity=subject, verbose=verbose)
+
+        else:
+            log(
+                f"Document {doc.recordId} has no subjects to link to",
+                level="warning",
+                verbose=verbose,
+            )
+
+    def createLinkToEntity(
+        self,
+        doc: Document,
+        entity: str,
+        verbose: bool = False,
+    ) -> None:
+        """
+        Create a link to an entity in the GraphDB.
+
+        Parameters
+        ----------
+        `doc` : `Document`
+            Document to create link to entity for
+        `entity` : `str`
+            Entity to create link to
+        `verbose` : `bool`, optional
+            Verbose of the output, by default `False`
+        """
+        query = f"""
+        MATCH (doc: Document {{ id: {doc.recordId} }})
+        MERGE (target {{ labelEn: {entity} }})
+        MERGE (source)-[r:IS_ABOUT]->(target)
+        """
+
+        self.query(query=query, verbose=verbose)
 
     def createDocument(self, doc: Document, verbose: bool = False) -> None:
         """
