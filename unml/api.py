@@ -19,6 +19,7 @@ app = FastAPI(
     debug=True,
     title="UNML API",
     description="API for the machine learning pipeline of the UNML project",
+    # When the API starts, check the connection to the GraphDB
     on_startup=[graphDB.checkConnection],
 )
 
