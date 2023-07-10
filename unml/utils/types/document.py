@@ -16,6 +16,7 @@ class Document(BaseModel):  # type: ignore
     altTitle: Optional[str] = None
     location: Optional[str] = None
     symbol: Optional[str] = None
+    subjects: Optional[List[str]] = None
     publicationDate: Optional[str] = None
     relatedDocuments: Optional[List["Document"]] = None
     # TODO: Add the bodies individually to the graph database
@@ -27,12 +28,13 @@ class Document(BaseModel):  # type: ignore
     def toGraphDBObject(self) -> str:
         """
         Convert the document to a Cypher query.
+        The list of subjects is ignored to avoid duplicates
+        with the links.
 
         Returns
         -------
         `str`
-            The query
-
+            The Cypher object for the document.
 
         Example
         --------
@@ -100,6 +102,7 @@ class Document(BaseModel):  # type: ignore
             The parsed document.
         """
         downloads = response.get("downloads")
+        subjects = response.get("subjects")
 
         if downloads is None or downloads.get("English") is None:
             raise ValueError("No downloads found in the response")
@@ -111,6 +114,7 @@ class Document(BaseModel):  # type: ignore
                 location=response.get("location"),
                 symbol=response.get("symbol"),
                 publicationDate=response.get("publicationDate"),
+                subjects=subjects.get("unbist") if subjects else [],
                 url=downloads.get("English"),
                 relatedDocuments=response.get("relatedDocuments"),
                 unBodies=response.get("unBodies"),
