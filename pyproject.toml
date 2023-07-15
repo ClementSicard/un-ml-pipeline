@@ -75,7 +75,7 @@ spacy = "^3.5.3"
 uvicorn = "^0.22.0"
 fastapi = "^0.98.0"
 pydantic = "^1.10.9"
-undl = { git = "https://github.com/ClementSicard/un-digital-library-api.git", tag = "v1.0.0c" }
+undl = { git = "https://github.com/ClementSicard/un-digital-library-api.git", tag = "v1.0.1" }
 neo4j = "^5.9.0"
 
 
