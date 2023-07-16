@@ -101,7 +101,7 @@ class GraphDB:
             Verbose of the output, by default `False`
         """
 
-        if doc.subjects is not None:
+        if doc.subjects:
             for subject in doc.subjects:
                 self.createLinkToEntity(doc=doc, entity=subject, verbose=verbose)
 
@@ -131,9 +131,10 @@ class GraphDB:
             Verbose of the output, by default `False`
         """
         query = f"""
-        MATCH (doc: Document {{ id: {doc.recordId} }})
-        MERGE (target {{ labelEn: {entity} }})
-        MERGE (source)-[r:IS_ABOUT]->(target)
+        MATCH (doc: Document {{ id: '{doc.recordId}' }})
+        MERGE (target {{ labelEn: '{entity}' }})
+        MERGE (doc)-[r:IS_ABOUT]->(target)
+        RETURN doc, r, target
         """
 
         self.query(query=query, verbose=verbose)
