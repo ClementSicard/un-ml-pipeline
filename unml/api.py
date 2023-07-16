@@ -60,11 +60,7 @@ def run(records: List[Record]) -> List[JSON]:
 
     for record in records:
         # 1. Query the API with the record ID to get the document info
-        queryResult = clientUNDL.queryById(
-            recordId=record.recordId,
-            oldURL=True,
-            outputFormat="marcxml",
-        )
+        queryResult = clientUNDL.queryById(recordId=record.recordId)
         log(
             json.dumps(queryResult, indent=4, ensure_ascii=False),
             verbose=True,
@@ -72,7 +68,7 @@ def run(records: List[Record]) -> List[JSON]:
         )
         try:
             # 2. Create a document object from the API response
-            doc = Document.fromLibraryAPIResponse(response=queryResult[0])
+            doc = Document.fromLibraryAPIResponse(response=queryResult["records"][0])
             parsedDocs.append(doc)
 
         except KeyError as e:
