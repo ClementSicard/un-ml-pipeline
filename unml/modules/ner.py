@@ -40,7 +40,7 @@ class NamedEntityRecognizer:
         self,
         text: str,
         verbose: bool = False,
-    ) -> Tuple[Dict[str, int], List[Dict[str, Any]]]:
+    ) -> Tuple[Dict[str, int], List[str], List[Dict[str, Any]]]:
         """
         Recognize named entities in a text, using chunks of tokens fed
         sequentially to the model.
@@ -54,10 +54,9 @@ class NamedEntityRecognizer:
 
         Returns
         -------
-        `Tuple[Dict[str, int], List[Dict[str, Any]]]`
+        `Tuple[Dict[str, int], List[str], List[Dict[str, Any]]]`
             The cleaned list of named entities in the text as dictionnary with
             the entity and its frequency, and the detailed entities output
-            ```
         """
         results = self.nerExtractor.recognize(text=text)
 
@@ -65,6 +64,8 @@ class NamedEntityRecognizer:
             detailedEntities=results,
             verbose=verbose,
         )
+
+        countries = TextUtils.extractCountries(text=text)
 
         log(
             f"Named entities by chunking found: {len(cleanedEntities)}",
@@ -78,7 +79,7 @@ class NamedEntityRecognizer:
             verbose=verbose,
             level="info",
         )
-        return cleanedEntities, results
+        return cleanedEntities, countries, results
 
     def cleanDetailedEntities(
         self,

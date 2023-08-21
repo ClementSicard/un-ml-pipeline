@@ -93,14 +93,13 @@ def runPipelines(
             3. Named Entity Recognition
             """
             if args["ner"]:
-                entities, detailed = ner.recognize(
+                entities, countries, detailed = ner.recognize(
                     text=extractedText,
                     verbose=verbose,
                 )
                 result["named_entities"]["list"] = entities
+                result["named_entities"]["countries"] = countries
                 result["named_entities"]["detailed"] = detailed
-
-                # TODO: NERs with Neo4j
 
             """
             4. Save results to result array

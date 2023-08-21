@@ -274,6 +274,12 @@ class TextUtils:
         `List[str]`
             Extracts countries from the text
         """
+        countries = set()
         pattern = r"\b(" + "|".join(COUNTRIES) + r")\b"
 
-        return re.findall(pattern, text)
+        results = re.findall(pattern, text)
+        for result in results:
+            result = result[0]
+            countries.add(result)
+
+        return sorted(list(countries))

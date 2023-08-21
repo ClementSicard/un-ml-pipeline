@@ -101,13 +101,58 @@ class GraphDB:
             Verbose of the output, by default `False`
         """
 
+        self._createLinksToUNBodies(doc=doc, verbose=verbose)
+        self._createLinksToSubjects(doc=doc, verbose=verbose)
+
+    def _createLinksToSubjects(self, doc: Document, verbose: bool = False) -> None:
+        """
+        Create links to subjects in the GraphDB.
+
+        Parameters
+        ----------
+        `doc` : `Document`
+            Document to create links to subjects for
+        `verbose` : `bool`, optional
+            Verbose, by default `False`
+        """
         if doc.subjects:
             for subject in doc.subjects:
-                self.createLinkToEntity(doc=doc, entity=subject, verbose=verbose)
-
+                self.createLinkToEntity(
+                    doc=doc,
+                    entity=subject,
+                    relationshipType="IS_ABOUT",
+                    verbose=verbose,
+                )
         else:
             log(
                 f"Document {doc.recordId} has no subjects to link to",
+                level="warning",
+                verbose=verbose,
+            )
+
+    def _createLinksToUNBodies(self, doc: Document, verbose: bool = False) -> None:
+        """
+        Create links to UN bodies in the GraphDB.
+
+        Parameters
+        ----------
+        `doc` : `Document`
+            Document to create links to subjects for
+        `verbose` : `bool`, optional
+            Verbose, by default `False`
+        """
+        if doc.unBodies:
+            for unBody in doc.unBodies:
+                self.createLinkToEntity(
+                    doc=doc,
+                    entity=unBody,
+                    relationshipType="REFERENCES",
+                    targetKey="accronym",
+                    verbose=verbose,
+                )
+        else:
+            log(
+                f"Document {doc.recordId} has no UN bodies to link to",
                 level="warning",
                 verbose=verbose,
             )
@@ -116,6 +161,8 @@ class GraphDB:
         self,
         doc: Document,
         entity: str,
+        relationshipType: str = "IS_ABOUT",
+        targetKey: str = "labelEn",
         verbose: bool = False,
     ) -> None:
         """
@@ -127,13 +174,17 @@ class GraphDB:
             Document to create link to entity for
         `entity` : `str`
             Entity to create link to
+        `relationshipType` : `str`, optional
+            Type of the relationship, by default `IS_ABOUT`
+        `targetKey` : `str`, optional
+            Key of the target node, by default `labelEn`
         `verbose` : `bool`, optional
             Verbose of the output, by default `False`
         """
         query = f"""
         MATCH (doc: Document {{ id: '{doc.recordId}' }})
-        MERGE (target {{ labelEn: '{entity}' }})
-        MERGE (doc)-[r:IS_ABOUT]->(target)
+        MERGE (target {{ {targetKey}: '{entity}' }})
+        MERGE (doc)-[r:{relationshipType}]->(target)
         RETURN doc, r, target
         """
 
