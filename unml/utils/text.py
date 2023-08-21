@@ -1,8 +1,10 @@
+import re
 from typing import List, Optional
 
 import fitz
 from transformers import PreTrainedTokenizer
 
+from unml.utils.consts.countries import COUNTRIES
 from unml.utils.misc import log
 
 
@@ -256,3 +258,22 @@ class TextUtils:
             string = string.replace(pattern, replacement)
 
         return string
+
+    @staticmethod
+    def extractCountries(text: str) -> List[str]:
+        """
+        Extract countries from a text.
+
+        Parameters
+        ----------
+        `text` : `str`
+            The text to be checked
+
+        Returns
+        -------
+        `List[str]`
+            Extracts countries from the text
+        """
+        pattern = r"\b(" + "|".join(COUNTRIES) + r")\b"
+
+        return re.findall(pattern, text)
