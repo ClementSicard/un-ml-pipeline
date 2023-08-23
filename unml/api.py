@@ -66,7 +66,7 @@ def run(records: List[Record]) -> JSON | List[JSON]:
     try:
         parsedDocs = []
 
-        for record in records if len(records) < 100 else records[:100]:
+        for record in records:
             currentRecord = record.recordId
             if graphDB.docExists(record):
                 log(
