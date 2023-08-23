@@ -128,6 +128,12 @@ def run_search(q: str) -> JSON | List[JSON]:
     ids = results["hits"]
     records = [Record(recordId=id_) for id_ in ids]
 
+    log(
+        f"{len(records)} records are associated with search '{q}'",
+        level="success",
+        verbose=True,
+    )
+
     runResult: JSON | List[JSON] = run(records=records)
 
     return runResult
