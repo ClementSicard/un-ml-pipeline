@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel
 
+from unml.utils.misc import log
 from unml.utils.text import TextUtils
 
 
@@ -12,16 +13,14 @@ class Document(BaseModel):  # type: ignore
 
     recordId: str
     title: str
-    url: str
+    url: Optional[str] = None
     altTitle: Optional[str] = None
     location: Optional[str] = None
     symbol: Optional[str] = None
     subjects: Optional[List[str]] = None
     publicationDate: Optional[str] = None
     relatedDocuments: Optional[List["Document"]] = None
-    # TODO: Add the bodies individually to the graph database
     unBodies: Optional[List[str]] = None
-
     summary: Optional[str] = None
     namedEntities: Optional[Dict[str, Dict[str, int] | List[Dict[str, Any]]]] = None
 
@@ -86,8 +85,12 @@ class Document(BaseModel):  # type: ignore
             url=TextUtils.replaceIfNotNull(self.url, '"', '\\"'),
         )
 
-    @staticmethod
-    def fromLibraryAPIResponse(response: Dict[str, Any]) -> "Document":
+    @classmethod
+    def fromLibraryAPIResponse(
+        cls,
+        response: Dict[str, Any],
+        acceptNoDownloads: bool = True,
+    ) -> "Document":
         """
         Parse the information from the response of the UNDL API.
 
@@ -104,18 +107,20 @@ class Document(BaseModel):  # type: ignore
         downloads = response.get("downloads")
         subjects = response.get("subjects")
 
-        if downloads is None or downloads.get("English") is None:
-            raise ValueError("No downloads found in the response")
-        else:
-            return Document(
-                recordId=response.get("id"),
-                title=response.get("title"),
-                altTitle=response.get("altTitle"),
-                location=response.get("location"),
-                symbol=response.get("symbol"),
-                publicationDate=response.get("publicationDate"),
-                subjects=subjects.get("unbist") if subjects else [],
-                url=downloads.get("English"),
-                relatedDocuments=response.get("relatedDocuments"),
-                unBodies=response.get("unBodies"),
-            )
+        if (
+            downloads is None or downloads.get("English") is None
+        ) and not acceptNoDownloads:
+            log("No downloads found in the response", level="warning", verbose=True)
+
+        return cls(
+            recordId=response["id"],
+            title=response["title"],
+            url=downloads.get("English") if downloads else None,
+            altTitle=response.get("altTitle"),
+            location=response.get("location"),
+            symbol=response.get("symbol"),
+            publicationDate=response.get("publicationDate"),
+            subjects=subjects["unbist"] if subjects else [],
+            relatedDocuments=response.get("relatedDocuments"),
+            unBodies=response.get("unBodies"),
+        )
