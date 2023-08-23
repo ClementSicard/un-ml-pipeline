@@ -4,6 +4,7 @@ This module contains miscellaneous functions and classes.
 import inspect
 import os
 import sys
+from typing import Any, Dict
 
 from loguru import logger
 from transformers.utils import logging as hfLogging
@@ -38,11 +39,36 @@ def getPenultimateFunctionName() -> str:
         return "N/A"
 
 
+def customFormat(record: Dict[str, Any]) -> str:
+    """
+    Returns a custom format for the logger.
+
+    Parameters
+    ----------
+    `record` : `Dict[str, Any]`
+        The record to be formatted
+
+    Returns
+    -------
+    `str`
+        The formatted record
+    """
+    if "penultimate" in record["extra"]:
+        return (
+            "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level>"
+            " | <cyan>{extra[penultimate]}</cyan> | <level>{message}</level>\n"
+        )
+    else:
+        return (
+            "[EXTERNAL] <blue>{time:YYYY-MM-DD HH:mm:ss.SSS}</blue> | "
+            "<level>{level: <8}</level> | <level>{message}</level>\n"
+        )
+
+
 logger.remove()
 logger.add(
     sys.stderr,
-    format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level>"
-    + " | <cyan>{extra[penultimate]}</cyan> | <level>{message}</level>",
+    format=customFormat,
     level="DEBUG",
     colorize=True,
     diagnose=False,
