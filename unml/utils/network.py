@@ -5,12 +5,14 @@ from typing import Any, Dict, List, Optional
 
 import aiohttp
 from requests import get
+from undl.client import UNDLClient
 
 from unml.utils.consts.io import IOConsts
 from unml.utils.io import IOUtils
 from unml.utils.misc import log
 from unml.utils.text import TextUtils
 from unml.utils.types.document import Document
+from unml.utils.types.record import Record
 
 
 class NetworkUtils:
@@ -84,7 +86,7 @@ class NetworkUtils:
         start = time.time()
         results = asyncio.run(
             NetworkUtils.getExtractedTextFromMultipleURLs(
-                urls=[doc.url for doc in docs],
+                urls=[doc.url for doc in docs if doc.url is not None],
                 headers=headers,
                 verbose=verbose,
             )
@@ -188,6 +190,8 @@ class NetworkUtils:
                         session=session,
                         headers=headers,
                     )
+                    if url is not None
+                    else {"url": None, "text": None}
                     for url in urls
                 ]
             )
@@ -199,3 +203,34 @@ class NetworkUtils:
         )
 
         return ret
+
+    @staticmethod
+    def queryByIdUNDL(record: Record) -> Optional[Document]:
+        """
+        Query the UNDL API with a given record ID.
+
+        Parameters
+        ----------
+        `record` : `Record`
+            The record to query the API with
+
+        Returns
+        -------
+        `Optional[Document]`
+            The document corresponding to the record ID, `None` if not found or doesn't contain the right structure.
+        """
+        clientUNDL = UNDLClient(verbose=True)
+
+        queryResult = clientUNDL.queryById(recordId=record.recordId)
+
+        if len(queryResult["records"]) == 0:
+            return None
+        # 2. Create a document object from the API response
+        doc = Document.fromLibraryAPIResponse(
+            response=queryResult["records"][0]
+            if len(queryResult["records"]) > 0
+            else {},
+            acceptNoDownloads=True,
+        )
+
+        return doc
