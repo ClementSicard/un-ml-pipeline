@@ -1,19 +1,22 @@
-import json
-from typing import List
+from typing import Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException
+from loguru import logger
 from undl.client import UNDLClient
 
 from unml.graphdb.graphdb import GraphDB
 from unml.main import runPipelines
 from unml.utils.consts.api import APIConsts
 from unml.utils.misc import log
+from unml.utils.network import NetworkUtils
 from unml.utils.types.document import Document
 from unml.utils.types.json import JSON
 from unml.utils.types.record import Record
 
-clientUNDL = UNDLClient(verbose=True)
+clientUNDL = UNDLClient(verbose=False)
 graphDB = GraphDB()
+
+recordsCache: Dict[str, Optional[Document]] = {}
 
 app = FastAPI(
     debug=True,
@@ -34,11 +37,11 @@ def readRoot() -> JSON:
     `JSON`
         A simple JSON object with a `"Hello"` key and a `"World"` value
     """
-    return {"Hello": "World"}
+    return {"Hello": "✅"}
 
 
 @app.post("/run")  # type: ignore
-def run(records: List[Record]) -> List[JSON]:
+def run(records: List[Record]) -> JSON | List[JSON]:
     """
     Post a list of record IDs to run the pipeline on the documents
     corresponding to them.
@@ -50,42 +53,81 @@ def run(records: List[Record]) -> List[JSON]:
     ----------
     `docs` : `List[Record]`
         The list of record IDs
+    `skipEmptyDocs` : `bool`
+        Whether to skip documents with no URL or file specified. Defaults to `False`.
 
     Returns
     -------
     `List[JSON]`
         The list of documents with the pipeline results
     """
-    parsedDocs = []
 
-    for record in records:
-        # 1. Query the API with the record ID to get the document info
-        queryResult = clientUNDL.queryById(recordId=record.recordId)
-        log(
-            json.dumps(queryResult, indent=4, ensure_ascii=False),
-            verbose=True,
-            level="debug",
-        )
-        try:
-            # 2. Create a document object from the API response
-            doc = Document.fromLibraryAPIResponse(response=queryResult["records"][0])
-            parsedDocs.append(doc)
+    currentRecord = ""
+    try:
+        parsedDocs = []
 
-        except KeyError as e:
-            log(f"Error: {e}", level="error", verbose=True)
-
-            # Error: no URL or file specified
-            if "English" not in e.args[0]:
-                raise HTTPException(
-                    status_code=404,
-                    detail=f"No URL found for id '{record.recordId}'",
+        for record in records if len(records) < 100 else records[:100]:
+            currentRecord = record.recordId
+            if graphDB.docExists(record):
+                log(
+                    f"Record {record.recordId} found in GraphDB!",
+                    verbose=True,
+                    level="success",
                 )
-            else:
-                raise HTTPException(status_code=500, detail="Internal server error")
+                continue
+            elif record.recordId in recordsCache:
+                log(
+                    f"Record {record.recordId} found in cache!",
+                    verbose=True,
+                    level="success",
+                )
+                parsedDocs.append(recordsCache[record.recordId])
+                continue
 
-        except Exception as e:
-            log(f"Error: {e}", level="error", verbose=True)
-            # Error: no URL or file specified
-            raise HTTPException(status_code=500, detail="Internal server error")
+            doc = NetworkUtils.queryByIdUNDL(record=record)
+            parsedDocs.append(doc)
+            recordsCache[record.recordId] = doc
 
-    return runPipelines(docs=parsedDocs, args=APIConsts.DEFAULT_PIPELINE_ARGS)
+    except Exception as e:
+        log(f"Error: {e} at record {currentRecord}", level="error", verbose=True)
+        raise HTTPException(500, f"Internal server error: {e}")
+
+    if len(parsedDocs) == 0:
+        return {
+            "info": "No new documents found",
+        }
+    return runPipelines(documents=parsedDocs, args=APIConsts.DEFAULT_PIPELINE_ARGS)
+
+
+@app.get("/run_search")  # type: ignore
+def run_search(q: str) -> JSON | List[JSON]:
+    """
+    Get a prompt to run the pipeline on all the documents
+    corresponding to the response of the corresponding search.
+
+    The function first get all the IDs of all the documents corresponding to the search,
+    then runs the pipeline on them.
+
+    The pipeline is run with the default arguments, defined in `APIConsts` in
+    `unml/utils/consts/api.py`.
+
+    Parameters
+    ----------
+    `q` : `str`
+        The prompt to search for
+
+    Returns
+    -------
+    `List[JSON]`
+        The list of documents with the pipeline results
+    """
+
+    logger.info(f"Querying UNDL for prompt: {q}")
+
+    results = clientUNDL.getAllRecordIds(prompt=q)
+    ids = results["hits"]
+    records = [Record(recordId=id_) for id_ in ids]
+
+    runResult: JSON | List[JSON] = run(records=records)
+
+    return runResult
