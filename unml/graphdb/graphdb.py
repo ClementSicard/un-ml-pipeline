@@ -1,11 +1,12 @@
 from typing import Any, Dict, List, Optional
 
-from neo4j import EagerResult, GraphDatabase
+from neo4j import GraphDatabase, ResultSummary
 from neo4j._data import Record
 
 from unml.utils.consts.graphdb import GraphDBConsts
 from unml.utils.misc import log
 from unml.utils.types.document import Document
+from unml.utils.types.record import Record as UNMLRecord
 
 
 class GraphDB:
@@ -50,7 +51,7 @@ class GraphDB:
         params: Optional[Dict[str, Any]] = None,
         returnSummary: bool = False,
         verbose: bool = False,
-    ) -> List[Record] | EagerResult:
+    ) -> List[Record] | ResultSummary:
         """
         Execute a query on the GraphDB.
 
@@ -205,11 +206,14 @@ class GraphDB:
         query = f"""
         MERGE ({doc.toGraphDBObject()})
         """
-        summary: EagerResult = self.query(
+        summary = self.query(
             query=query,
             verbose=verbose,
             returnSummary=True,
         )
+
+        if not isinstance(summary, ResultSummary):
+            return
 
         log(
             f"Created {summary.counters.nodes_created} document(s) in"
@@ -234,3 +238,30 @@ class GraphDB:
             raise ConnectionError(
                 f"Could not connect to the GraphDB at {self.URI} with auth {self.AUTH}"
             ) from e
+
+    def docExists(self, record: UNMLRecord) -> bool:
+        """
+        Checks if a document already exists in the GraphDB.
+
+        Parameters
+        ----------
+        `record` : `UNMLRecord`
+            Record to check if it exists in the GraphDB
+
+        Returns
+        -------
+        `bool`
+            Whether the document exists or not
+        """
+
+        query = f"""
+        MATCH (doc: Document {{ id: '{record.recordId}' }})
+        RETURN doc
+        """
+
+        log(f"Query: {query}", verbose=True)
+        records = self.query(query=query)
+
+        assert type(records) == list, f"Records is not a list! {type(records)}"
+
+        return len(records) > 0
