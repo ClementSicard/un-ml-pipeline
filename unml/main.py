@@ -1,5 +1,5 @@
 import sys
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from tqdm import tqdm
 
@@ -16,7 +16,7 @@ from unml.utils.types.json import JSON
 
 
 def runPipelines(
-    docs: List[Document],
+    documents: List[Optional[Document]],
     args: Dict[str, Any],
 ) -> List[JSON]:
     """
@@ -35,6 +35,8 @@ def runPipelines(
     `List[JSON]`:
         The list of documents with the pipeline results
     """
+
+    docs = [doc for doc in documents if doc is not None]
     verbose = args["verbose"]
     """
     0. Instantiate summarizer and NER depending on tasks as well as GraphDB connector
@@ -53,10 +55,6 @@ def runPipelines(
 
     texts = NetworkUtils.extractTextFromDocuments(docs=docs, verbose=verbose)
     results: List[JSON] = []
-
-    assert len(texts) == len(
-        docs
-    ), f"Length of texts and docs is not equal! {len(texts)} texts != {len(docs)} docs"
 
     for textJson, doc in tqdm(zip(texts, docs)) if not verbose else zip(texts, docs):
         print("=" * 100 + "\n", file=sys.stderr)
@@ -106,17 +104,17 @@ def runPipelines(
             """
             results.append(result)
 
-            """
-            5. Save results to GraphDB
-            """
-            graphDB.createDocument(doc=doc, verbose=verbose)
-
         else:
             log(
                 f"Extracted text for {textJson['url']} is empty!",
                 level="error",
                 verbose=verbose,
             )
+
+        """
+        5. Save results to GraphDB
+        """
+        graphDB.createDocument(doc=doc, verbose=verbose)
 
     # Save results to a JSON file
     if args.get("output"):
@@ -131,14 +129,27 @@ if __name__ == "__main__":
     args = ArgUtils.parseArgs()
     urls = ArgUtils.getURLsAndIDsFromArgs(args=args)
 
-    docs = [
-        Document(url=url, recordId=APIUtils.extractRecordIdFromURL(url=url))
-        for url in urls
-    ]
+    docs: List[Optional[Document]] = []
+
+    for url in urls:
+        id_ = APIUtils.extractRecordIdFromURL(url=url)
+        if id_ is None:
+            log(
+                f"Could not extract record ID from URL {url}",
+                level="error",
+                verbose=args["verbose"],
+            )
+            continue
+        doc = Document(
+            url=url,
+            recordId=id_,
+            title=url,
+        )
+        docs.append(doc)
 
     log(f"Documents: {docs}", verbose=args["verbose"])
 
     runPipelines(
-        docs=docs,
+        documents=docs,
         args=args,
     )
