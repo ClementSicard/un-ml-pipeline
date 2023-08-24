@@ -27,7 +27,11 @@ class GraphDB:
         """
         if not isinstance(cls._instance, cls):
             cls._instance = object.__new__(cls)
-            log("Created a new GraphDB instance", level="info", verbose=True)
+            log(
+                "Successfully created a new Neo4j connector instance",
+                level="info",
+                verbose=True,
+            )
 
         return cls._instance
 
