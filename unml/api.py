@@ -1,3 +1,4 @@
+import os
 from typing import Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException
@@ -18,12 +19,26 @@ graphDB = GraphDB()
 
 recordsCache: Dict[str, Optional[Document]] = {}
 
+
+def onStart() -> None:
+    """
+    Function to run on startup.
+    """
+    log("Starting API...", level="info", verbose=True)
+    graphDB.checkConnection()
+
+    if os.getenv("UN_API") is None:
+        raise ValueError("Environment variable UN_API is not set!")
+
+    log("API started!", level="success", verbose=True)
+
+
 app = FastAPI(
     debug=True,
     title="UNML API",
     description="API for the machine learning pipeline of the UNML project",
     # When the API starts, check the connection to the GraphDB
-    on_startup=[graphDB.checkConnection],
+    on_startup=[onStart],
 )
 
 
