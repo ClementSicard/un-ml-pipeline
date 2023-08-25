@@ -107,16 +107,17 @@ class GraphDB:
         """
 
         self._createLinksToUNBodies(doc=doc, verbose=verbose)
-        self._createLinksToSubjects(doc=doc, verbose=verbose)
+        self._createLinksToTopics(doc=doc, verbose=verbose)
+        self._createLinksToCountries(doc=doc, verbose=verbose)
 
-    def _createLinksToSubjects(self, doc: Document, verbose: bool = False) -> None:
+    def _createLinksToTopics(self, doc: Document, verbose: bool = False) -> None:
         """
-        Create links to subjects in the GraphDB.
+        Create links to topics in the GraphDB.
 
         Parameters
         ----------
         `doc` : `Document`
-            Document to create links to subjects for
+            Document to create links to topics for
         `verbose` : `bool`, optional
             Verbose, by default `False`
         """
@@ -126,11 +127,13 @@ class GraphDB:
                     doc=doc,
                     entity=subject,
                     relationshipType="IS_ABOUT",
+                    targetKey="labelEn",
+                    targetType="Topic",
                     verbose=verbose,
                 )
         else:
             log(
-                f"Document {doc.recordId} has no subjects to link to",
+                f"Document {doc.recordId} has no Topic to link to",
                 level="warning",
                 verbose=verbose,
             )
@@ -142,7 +145,7 @@ class GraphDB:
         Parameters
         ----------
         `doc` : `Document`
-            Document to create links to subjects for
+            Document to create links to UN bodies for
         `verbose` : `bool`, optional
             Verbose, by default `False`
         """
@@ -153,6 +156,35 @@ class GraphDB:
                     entity=unBody,
                     relationshipType="REFERENCES",
                     targetKey="accronym",
+                    targetType="UNBody",
+                    verbose=verbose,
+                )
+        else:
+            log(
+                f"Document {doc.recordId} has no UN bodies to link to",
+                level="warning",
+                verbose=verbose,
+            )
+
+    def _createLinksToCountries(self, doc: Document, verbose: bool = False) -> None:
+        """
+        Create links to countries in the GraphDB.
+
+        Parameters
+        ----------
+        `doc` : `Document`
+            Document to create links to countries for
+        `verbose` : `bool`, optional
+            Verbose, by default `False`
+        """
+        if doc.countries:
+            for country in doc.countries:
+                self.createLinkToEntity(
+                    doc=doc,
+                    entity=country.upper(),
+                    relationshipType="REFERENCES",
+                    targetKey="labelEn",
+                    targetType="Country",
                     verbose=verbose,
                 )
         else:
@@ -168,6 +200,7 @@ class GraphDB:
         entity: str,
         relationshipType: str = "IS_ABOUT",
         targetKey: str = "labelEn",
+        targetType: str = "Topic",
         verbose: bool = False,
     ) -> None:
         """
@@ -183,12 +216,14 @@ class GraphDB:
             Type of the relationship, by default `IS_ABOUT`
         `targetKey` : `str`, optional
             Key of the target node, by default `labelEn`
+        `targetType` : `str`, optional
+            Type of the target node, by default `Topic`
         `verbose` : `bool`, optional
             Verbose of the output, by default `False`
         """
         query = f"""
         MATCH (doc: Document {{ id: '{doc.recordId}' }})
-        MERGE (target {{ {targetKey}: '{entity}' }})
+        MERGE (target: {targetType} {{ {targetKey}: '{entity}' }})
         MERGE (doc)-[r:{relationshipType}]->(target)
         RETURN doc, r, target
         """
@@ -220,8 +255,8 @@ class GraphDB:
             return
 
         log(
-            f"Created {summary.counters.nodes_created} document(s) in"
-            + f" {summary.result_available_after} ms.",
+            f"Created {summary.counters.nodes_created:,} document(s) in"
+            + f" {summary.result_available_after:,} ms.",
             verbose=verbose,
         )
 
@@ -262,8 +297,6 @@ class GraphDB:
         MATCH (doc: Document {{ id: '{record.recordId}' }})
         RETURN doc
         """
-
-        log(f"Query: {query}", verbose=True)
         records = self.query(query=query)
 
         assert type(records) == list, f"Records is not a list! {type(records)}"

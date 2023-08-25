@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException
 from loguru import logger
+from tqdm import tqdm
 from undl.client import UNDLClient
 
 from unml.graphdb.graphdb import GraphDB
@@ -78,10 +79,19 @@ def run(records: List[Record]) -> JSON | List[JSON]:
     """
 
     currentRecord = ""
+    nonExistentRecords = [
+        record
+        for record in tqdm(records, desc="Checking if records exist...", unit="record")
+        if not graphDB.docExists(record)
+    ]
+    log(
+        f"{len(records) - len(nonExistentRecords):,} documents are already in the DB.",
+        verbose=True,
+    )
     try:
         parsedDocs = []
 
-        for record in records:
+        for record in nonExistentRecords[:100]:
             currentRecord = record.recordId
             if graphDB.docExists(record):
                 log(
@@ -144,7 +154,7 @@ def run_search(q: str) -> JSON | List[JSON]:
     records = [Record(recordId=id_) for id_ in ids]
 
     log(
-        f"{len(records)} records are associated with search '{q}'",
+        f"{len(records):,} records are associated with search '{q}'",
         level="success",
         verbose=True,
     )

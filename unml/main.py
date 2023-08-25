@@ -71,12 +71,8 @@ def runPipelines(
             },
         }
 
-        if extractedText is not None:
-            log(f"Document size: {len(extractedText)} characters", verbose=verbose)
-            log(
-                f"Text: {extractedText}",
-                verbose=verbose,
-            )
+        if extractedText:
+            log(f"Document size: {len(extractedText):,} characters", verbose=verbose)
 
             """
             2. Summarize text
@@ -91,13 +87,23 @@ def runPipelines(
             3. Named Entity Recognition
             """
             if args["ner"]:
-                entities, countries, detailed = ner.recognize(
+                entities, countries, unBodies, detailed = ner.recognize(
                     text=extractedText,
                     verbose=verbose,
                 )
+
+                doc.countries = countries
+                for body in unBodies:
+                    if doc.unBodies is None:
+                        doc.unBodies = []
+
+                    if body not in doc.unBodies:
+                        doc.unBodies.append(body)
+
                 result["named_entities"]["list"] = entities
                 result["named_entities"]["countries"] = countries
                 result["named_entities"]["detailed"] = detailed
+                result["named_entities"]["unBodies"] = unBodies
 
             """
             4. Save results to result array
@@ -106,7 +112,7 @@ def runPipelines(
 
         else:
             log(
-                f"Extracted text for {textJson['url']} is empty!",
+                f"Extracted text for {textJson['url']} is empty! Still saving document in GraphDB",
                 level="error",
                 verbose=verbose,
             )

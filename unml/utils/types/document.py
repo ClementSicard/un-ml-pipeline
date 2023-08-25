@@ -21,6 +21,7 @@ class Document(BaseModel):  # type: ignore
     publicationDate: Optional[str] = None
     relatedDocuments: Optional[List["Document"]] = None
     unBodies: Optional[List[str]] = None
+    countries: Optional[List[str]] = None
     summary: Optional[str] = None
     namedEntities: Optional[Dict[str, Dict[str, int] | List[Dict[str, Any]]]] = None
 

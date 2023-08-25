@@ -2,7 +2,7 @@ SUMMARIZER := "led"
 RECOGNIZER := "spacy"
 
 both:
-	poetry run python unml/main.py \
+	@poetry run python unml/main.py \
 		-f urls.txt \
 		-v \
 		--summarize \
@@ -11,7 +11,7 @@ both:
 		--recognizer ${RECOGNIZER}
 
 summarize:
-	poetry run python unml/main.py \
+	@poetry run python unml/main.py \
 		-f urls.txt \
 		-v \
 		--summarize \
@@ -19,11 +19,14 @@ summarize:
 
 
 ner:
-	poetry run python unml/main.py \
+	@poetry run python unml/main.py \
 		-f urls.txt \
 		-v \
 		--ner \
 		--recognizer ${RECOGNIZER}
 
 api:
-	poetry run uvicorn unml.api:app --reload
+	@poetry run uvicorn unml.api:app --reload
+
+clean:
+	rm -rf ~/.unml/downloads

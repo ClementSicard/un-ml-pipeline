@@ -197,7 +197,7 @@ class NetworkUtils:
             )
 
         log(
-            f"Finalized all. Return is a list of len {len(ret)} outputs.",
+            f"Finalized all. Return is a list of len {len(ret):,} outputs.",
             level="success",
             verbose=verbose,
         )

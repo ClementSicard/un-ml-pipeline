@@ -43,7 +43,7 @@ class Summarizer:
         self.maxChunkSize = self.tokenizer.model_max_length - 10
 
         log(
-            f"Summarizer {parsedModel} instantiated! Max chunk size: {self.maxChunkSize}",
+            f"Summarizer {parsedModel} instantiated! Max chunk size: {self.maxChunkSize:,}",
             verbose=True,
             level="success",
         )
@@ -85,7 +85,7 @@ class Summarizer:
         tokens = self.tokenizer.tokenize(text)
         nTokens = len(tokens)
 
-        log(f"Number of tokens: {len(tokens)}", verbose=verbose, level="info")
+        log(f"Number of tokens: {len(tokens):,}", verbose=verbose, level="info")
 
         # If the number of tokens is less than the maximum chunk size,
         # summarize the text directly
@@ -102,14 +102,16 @@ class Summarizer:
         else:
             resultTokens = tokens.copy()
             while nTokens > self.maxChunkSize:
-                log(f"Input size: {nTokens}", verbose=verbose, level="debug")
+                log(f"Input size: {nTokens:,}", verbose=verbose, level="debug")
                 # 2. Chunk the tokens
                 chunks = TextUtils.chunkTokens(
                     tokens=resultTokens,
                     tokenizer=self.tokenizer,
                 )
 
-                log(f"Number of chunks: {len(chunks)}", verbose=verbose, level="debug")
+                log(
+                    f"Number of chunks: {len(chunks):,}", verbose=verbose, level="debug"
+                )
 
                 # 3. Summarize each chunk
                 summaries = []
@@ -128,14 +130,14 @@ class Summarizer:
                 nTokens = len(resultTokens)
 
                 log(
-                    f"Number of tokens of the result: {len(resultTokens)}",
+                    f"Number of tokens of the result: {len(resultTokens):,}",
                     verbose=verbose,
                     level="debug",
                 )
 
         log(f"Summary: {result}", verbose=verbose)
         log(
-            f"Done! Summary is {len(result)} characters long",
+            f"Done! Summary is {len(result):,} characters long",
             verbose=verbose,
             level="success",
         )

@@ -5,6 +5,7 @@ import fitz
 from transformers import PreTrainedTokenizer
 
 from unml.utils.consts.countries import COUNTRIES
+from unml.utils.consts.un_bodies import UN_BODIES
 from unml.utils.misc import log
 
 
@@ -272,10 +273,35 @@ class TextUtils:
         Returns
         -------
         `List[str]`
-            Extracts countries from the text
+            Extracted countries from the text
         """
         countries = set()
         pattern = r"\b(" + "|".join(COUNTRIES) + r")\b"
+
+        results = re.findall(pattern, text)
+        for result in results:
+            result = result[0]
+            countries.add(result)
+
+        return sorted(list(countries))
+
+    @staticmethod
+    def extractUNBodies(text: str) -> List[str]:
+        """
+        Extract UN Bodies from a text.
+
+        Parameters
+        ----------
+        `text` : `str`
+            The text to be checked
+
+        Returns
+        -------
+        `List[str]`
+            Extracted UN bodies from the text
+        """
+        countries = set()
+        pattern = r"\b(" + "|".join(UN_BODIES) + r")\b"
 
         results = re.findall(pattern, text)
         for result in results:
