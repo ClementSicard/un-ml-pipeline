@@ -93,14 +93,7 @@ def run(records: List[Record], n: int = 400) -> JSON | List[JSON]:
 
         for record in nonExistentRecords[:n]:
             currentRecord = record.recordId
-            if graphDB.docExists(record):
-                log(
-                    f"Record {record.recordId} found in GraphDB!",
-                    verbose=True,
-                    level="success",
-                )
-                continue
-            elif record.recordId in recordsCache:
+            if record.recordId in recordsCache:
                 log(
                     f"Record {record.recordId} found in cache!",
                     verbose=True,
@@ -110,6 +103,13 @@ def run(records: List[Record], n: int = 400) -> JSON | List[JSON]:
                 continue
 
             doc = NetworkUtils.queryByIdUNDL(record=record)
+            if doc is None:
+                log(
+                    f"Record {record.recordId} not found!",
+                    verbose=True,
+                    level="error",
+                )
+                continue
             parsedDocs.append(doc)
             recordsCache[record.recordId] = doc
 
@@ -121,6 +121,8 @@ def run(records: List[Record], n: int = 400) -> JSON | List[JSON]:
         return {
             "info": "No new documents found",
         }
+
+    log(f"Could parse {len(parsedDocs):,} documents", verbose=True)
     return runPipelines(documents=parsedDocs, args=APIConsts.DEFAULT_PIPELINE_ARGS)
 
 
@@ -161,6 +163,6 @@ def run_search(q: str, n: int = 400) -> JSON | List[JSON]:
         verbose=True,
     )
 
-    runResult: JSON | List[JSON] = run(records=records)
+    runResult: JSON | List[JSON] = run(records=records, n=n)
 
     return runResult

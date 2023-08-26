@@ -82,11 +82,18 @@ class NetworkUtils:
         `List[Dict[str, str]]`
             A list of dictionnaries, containing `"url"` and `"text"` fields.
         """
+        log(f"Downloading {len(docs):,} urls...", level="info", verbose=verbose)
+
+        urls = []
+        for doc in docs:
+            log(f"Doc {doc}...", level="debug", verbose=verbose)
+            if doc.url:
+                urls.append(doc.url)
 
         start = time.time()
         results = asyncio.run(
             NetworkUtils.getExtractedTextFromMultipleURLs(
-                urls=[doc.url for doc in docs if doc.url is not None],
+                urls=urls,
                 headers=headers,
                 verbose=verbose,
             )
@@ -182,6 +189,8 @@ class NetworkUtils:
             The contents of the given URLs, in the form of a list of
             `{"url": "...", "text": "..."}` objects.
         """
+
+        log(f"Now downloading {len(urls):,} urls...", level="info", verbose=verbose)
         async with aiohttp.ClientSession() as session:
             ret = await asyncio.gather(
                 *[
@@ -190,8 +199,6 @@ class NetworkUtils:
                         session=session,
                         headers=headers,
                     )
-                    if url is not None
-                    else {"url": None, "text": None}
                     for url in urls
                 ]
             )
@@ -201,7 +208,6 @@ class NetworkUtils:
             level="success",
             verbose=verbose,
         )
-
         return ret
 
     @staticmethod
@@ -224,7 +230,13 @@ class NetworkUtils:
         queryResult = clientUNDL.queryById(recordId=record.recordId)
 
         if len(queryResult["records"]) == 0:
+            log(
+                f"Record {record.recordId} not found!",
+                verbose=True,
+                level="error",
+            )
             return None
+
         # 2. Create a document object from the API response
         doc = Document.fromLibraryAPIResponse(
             response=queryResult["records"][0]
