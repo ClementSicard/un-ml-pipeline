@@ -189,7 +189,7 @@ class GraphDB:
                 )
         else:
             log(
-                f"Document {doc.recordId} has no UN bodies to link to",
+                f"Document {doc.recordId} has no countries to link to",
                 level="warning",
                 verbose=verbose,
             )
@@ -221,6 +221,8 @@ class GraphDB:
         `verbose` : `bool`, optional
             Verbose of the output, by default `False`
         """
+        entity = entity.replace("'", "\\'")  # Ensuring the query is safe
+
         query = f"""
         MATCH (doc: Document {{ id: '{doc.recordId}' }})
         MERGE (target: {targetType} {{ {targetKey}: '{entity}' }})

@@ -57,7 +57,7 @@ def readRoot() -> JSON:
 
 
 @app.post("/run")  # type: ignore
-def run(records: List[Record]) -> JSON | List[JSON]:
+def run(records: List[Record], n: int = 400) -> JSON | List[JSON]:
     """
     Post a list of record IDs to run the pipeline on the documents
     corresponding to them.
@@ -69,12 +69,12 @@ def run(records: List[Record]) -> JSON | List[JSON]:
     ----------
     `docs` : `List[Record]`
         The list of record IDs
-    `skipEmptyDocs` : `bool`
-        Whether to skip documents with no URL or file specified. Defaults to `False`.
+    `n`: `int`
+        The number of documents to return. Defaults to `400`.
 
     Returns
     -------
-    `List[JSON]`
+    `JSON | List[JSON]`
         The list of documents with the pipeline results
     """
 
@@ -91,7 +91,7 @@ def run(records: List[Record]) -> JSON | List[JSON]:
     try:
         parsedDocs = []
 
-        for record in nonExistentRecords[:100]:
+        for record in nonExistentRecords[:n]:
             currentRecord = record.recordId
             if graphDB.docExists(record):
                 log(
@@ -125,7 +125,7 @@ def run(records: List[Record]) -> JSON | List[JSON]:
 
 
 @app.get("/run_search")  # type: ignore
-def run_search(q: str) -> JSON | List[JSON]:
+def run_search(q: str, n: int = 400) -> JSON | List[JSON]:
     """
     Get a prompt to run the pipeline on all the documents
     corresponding to the response of the corresponding search.
@@ -140,6 +140,8 @@ def run_search(q: str) -> JSON | List[JSON]:
     ----------
     `q` : `str`
         The prompt to search for
+    `n`: `int`
+        The number of documents to return. Defaults to `400`.
 
     Returns
     -------
